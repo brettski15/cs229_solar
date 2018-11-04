@@ -1,8 +1,8 @@
 import os
-from common.solar_structures import SolarExample, SolarMatrix, SolarLabel
+from solar_common.solar_structures import SolarExample, SolarMatrix, SolarLabel
 
 
-DATA_FILE = "./data/tract_all.csv"
+DATA_FILE = "../data/tract_all.csv"
 
 
 def get_examples_from_csv(csv_path):
