@@ -41,13 +41,16 @@ class SolarMatrix(object):
     """
     A class to contain the entire set of data.
     data is an array of SolarExamples
+    labels is the corresponding array of labels
     headers is an array of strings that label each of the x columns (excluding label columns)
     """
     data = None
+    labels = None
     headers = []
 
-    def __init__(self, examples, headers):
+    def __init__(self, examples, labels, headers):
         self.data = examples
+        self.labels = labels
         self.headers = headers
 
     def __repr__(self):

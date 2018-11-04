@@ -18,6 +18,7 @@ def get_examples_from_csv(csv_path, partial_data=0):
         raise RuntimeError(f"File {csv_path} not found")
 
     examples = []
+    labels = []
     num_examples = 0
     header = None
 
@@ -34,12 +35,13 @@ def get_examples_from_csv(csv_path, partial_data=0):
                 ex_vals = items[4:]
                 ex = SolarExample(ex_vals, label)
                 examples.append(ex)
-                if partial_data > 0 and num_examples > partial_data:
+                labels.append(label)
+                num_examples += 1
+                if partial_data > 0 and num_examples >= partial_data:
                     print(f"Opting to not use all data for efficiency. Stopping at {partial_data} examples.")
                     break
-                num_examples += 1
 
-    matrix = SolarMatrix(examples, header)
+    matrix = SolarMatrix(examples, labels, header)
     print(matrix)
     return matrix
 
