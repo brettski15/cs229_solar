@@ -21,7 +21,7 @@ class SolarLabel(object):
         return f"SolarLabel(Area: {self.area}, System Count: {self.systems}, Tile Count: {self.tiles})"
 
     def __repr__(self):
-        return f"SolarLabel(area={self.area}, systems={self.systems}, tiles={self.tiles}"
+        return f"SolarLabel(area={self.area}, systems={self.systems}, tiles={self.tiles})"
 
 
 class SolarExample(object):
@@ -54,4 +54,4 @@ class SolarMatrix(object):
         self.headers = headers
 
     def __repr__(self):
-        return f"SolarMatrix(examples: {len(self.data)}. columns: {len(self.headers)}"
+        return f"SolarMatrix(examples: {len(self.data)}. columns: {len(self.headers)})"

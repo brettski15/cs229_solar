@@ -6,7 +6,7 @@ DATA_FILE = "../data/tract_all.csv"
 
 
 def split_data(data_matrix, train_pct=60, valid_pct=20):
-    if 100 - train_pct - valid_pct <=0:
+    if 100 - train_pct - valid_pct <= 0:
         raise RuntimeError("Invalid data split--not test data available.")
 
     if 100 - train_pct - valid_pct < 5:
@@ -19,15 +19,16 @@ def split_data(data_matrix, train_pct=60, valid_pct=20):
 
     train_count = int((train_pct / 100) * m)
     valid_count = int((valid_pct / 100) * m)
-    test_count = m - train_count - valid_count
+    # test_count = m - train_count - valid_count
 
-    train_matrix = SolarMatrix(examples[0:train_count], labels[0:train_count], data_matrix.headers)
-    valid_matrix = SolarMatrix(examples[train_count:-valid_count], labels[train_count:-valid_count], data_matrix.headers)
-    test_matrix = SolarMatrix(examples[-valid_count:], labels[-valid_count:], data_matrix.headers)
+    train_matrix = SolarMatrix(examples[0:train_count], labels[0:train_count],
+                               data_matrix.headers)
 
-    print(f"Train size: {len(train_matrix.data)}. "
-          f"Valid size: {len(valid_matrix.data)}. "
-          f"Test size: {len(test_matrix.data)}")
+    valid_matrix = SolarMatrix(examples[train_count:-valid_count], labels[train_count:-valid_count],
+                               data_matrix.headers)
+
+    test_matrix = SolarMatrix(examples[-valid_count:], labels[-valid_count:],
+                              data_matrix.headers)
 
     return train_matrix, valid_matrix, test_matrix
 
@@ -69,7 +70,7 @@ def get_examples_from_csv(csv_path, partial_data=0):
                     break
 
     matrix = SolarMatrix(examples, labels, header)
-    print(matrix)
+
     return matrix
 
 

@@ -5,20 +5,36 @@ from data_processing.parse_csv import get_examples_from_csv, split_data
 
 
 DATA_PATH = "../data/tract_all.csv"
+TOTAL_DATA_SIZE = 72538
+RESERVE_TEST_DATA = 14500
 
 
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--svm', action='store_true', help="If specified, run the SVM implementation")
     parser.add_argument('--nn', action='store_true', help="If specified, run the Neural Network implementation")
-    parser.add_argument('--count', '-c', type=int, default=1000, help="The number of pieces of data to use.")
+    parser.add_argument('--count', '-c', type=int, default=1000,
+                        help="The number of pieces of data to use. 0 for all data")
     args = parser.parse_args()
 
     print(f"Pulling {args.count} examples from the CSV")
 
-    full_data = get_examples_from_csv(DATA_PATH, args.count)
+    if args.count > TOTAL_DATA_SIZE - RESERVE_TEST_DATA or args.count <= 0:
+        data_count = TOTAL_DATA_SIZE - RESERVE_TEST_DATA
+        print(f"You have requested {args.count} rows of data, which would not leave {RESERVE_TEST_DATA} untouched rows "
+              f"to be used for production test data. Reducing your requested data size to {data_count}.")
+    else:
+        data_count = args.count
+
+    print(f"Requesting {data_count} rows of data.")
+
+    full_data = get_examples_from_csv(DATA_PATH, data_count)
 
     train_set, valid_set, test_set = split_data(full_data, train_pct=60, valid_pct=20)
+
+    print(f"Train size: {len(train_set.data)}. "
+          f"Valid size: {len(valid_set.data)}. "
+          f"Test size: {len(test_set.data)}")
 
     if args.nn:
         nn_main(train_set, valid_set, test_set)
