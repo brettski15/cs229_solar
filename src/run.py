@@ -19,7 +19,6 @@ def main():
     full_data = get_examples_from_csv(DATA_PATH, args.count)
 
     train_set, valid_set, test_set = split_data(full_data, train_pct=60, valid_pct=20)
-    return
 
     if args.nn:
         nn_main(train_set, valid_set, test_set)
