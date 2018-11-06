@@ -8,7 +8,8 @@ def main(train_set, valid_set, test_set):
     train_area = train_set.get_area_labels()
     train_tiles = train_set.get_tile_count_labels()
     train_system = train_set.get_system_count_labels()
-    # See above for how to access the data, labels, and (if desired) headers
+
+    # See above for how to access the data and labels
 
 
 if __name__ == '__main__':
