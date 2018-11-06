@@ -1,6 +1,6 @@
 import os
 # from solar_common.solar_structures import SolarExample, SolarMatrix, SolarLabel, SimpleMatrix
-from solar_common.solar_structures import SimpleMatrix
+from solar_common.solar_structures import SolarLabel, SimpleMatrix
 
 
 DATA_FILE = "../data/tract_all.csv"
@@ -73,7 +73,7 @@ def get_examples_from_csv(csv_path, partial_data=0, ret_simple_matrix=False):
         print(f"Cannot find the file at {csv_path}")
         raise RuntimeError(f"File {csv_path} not found")
 
-    examples = []
+    # examples = []
     labels = []
     num_examples = 0
     header = None
@@ -91,8 +91,8 @@ def get_examples_from_csv(csv_path, partial_data=0, ret_simple_matrix=False):
                 label = SolarLabel(items[3], items[2], items[1])
                 ex_vals = items[4:]
                 feature_matrix.append(ex_vals)
-                ex = SolarExample(ex_vals, label)
-                examples.append(ex)
+                # ex = SolarExample(ex_vals, label)
+                # examples.append(ex)
                 labels.append(label)
                 num_examples += 1
                 if partial_data > 0 and num_examples >= partial_data:
@@ -101,8 +101,8 @@ def get_examples_from_csv(csv_path, partial_data=0, ret_simple_matrix=False):
 
     if ret_simple_matrix:
         return SimpleMatrix(feature_matrix, labels)
-    else:
-        return SolarMatrix(examples, labels, header)
+    # else:
+    #     return SolarMatrix(examples, labels, header)
 
 
 if __name__ == '__main__':
