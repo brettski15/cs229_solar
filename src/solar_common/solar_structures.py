@@ -64,3 +64,12 @@ class SimpleMatrix(object):
     def __init__(self, xs, labels):
         self.X = np.array(xs)
         self.labels = np.array(labels)
+
+    def get_area_labels(self):
+        return np.array([ l.area for l in self.labels ])
+
+    def get_tile_count_labels(self):
+        return np.array([l.tiles for l in self.labels])
+
+    def get_system_count_labels(self):
+        return np.array([l.systems for l in self.labels])
