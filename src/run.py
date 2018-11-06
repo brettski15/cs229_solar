@@ -1,7 +1,9 @@
 import argparse
+import numpy as np
+
 from neural_network.neural_solar import main as nn_main
 from svm.svm_solar import main as svm_main
-from data_processing.parse_csv import get_examples_from_csv, split_data
+from data_processing.parse_csv import get_examples_from_csv, split_simple_data
 
 
 DATA_PATH = "../data/tract_all.csv"
@@ -28,13 +30,15 @@ def main():
 
     print(f"Requesting {data_count} rows of data.")
 
-    full_data = get_examples_from_csv(DATA_PATH, data_count)
+    full_data = get_examples_from_csv(DATA_PATH, data_count, ret_simple_matrix=True)
 
-    train_set, valid_set, test_set = split_data(full_data, train_pct=60, valid_pct=20)
+    train_set, valid_set, test_set = split_simple_data(full_data)
 
-    print(f"Train size: {len(train_set.data)}. "
-          f"Valid size: {len(valid_set.data)}. "
-          f"Test size: {len(test_set.data)}")
+    # train_set, valid_set, test_set = split_data(full_data, train_pct=60, valid_pct=20)
+
+    print(f"Train size: {train_set.labels.shape[0]}. "
+          f"Valid size: {valid_set.labels.shape[0]}. "
+          f"Test size: {test_set.labels.shape[0]}")
 
     if args.nn:
         nn_main(train_set, valid_set, test_set)
