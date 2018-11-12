@@ -1,9 +1,11 @@
 import argparse
-import numpy as np
+import pandas as pd
+from sklearn.preprocessing import StandardScaler
+from sklearn.decomposition import PCA
 
 from neural_network.neural_solar import main as nn_main
 from svm.svm_solar import main as svm_main
-from data_processing.parse_csv import get_examples_from_csv, split_simple_data
+from data_processing.parse_csv import get_examples_from_csv, split_simple_data, get_df_from_csv, split_df
 
 
 DATA_PATH = "../data/tract_all.csv"
@@ -12,10 +14,14 @@ RESERVE_TEST_DATA = 14500
 
 
 def main():
-    parser.add_argument('--svm', action='store_true', help="If specified, run the SVM implementation")
-    parser.add_argument('--nn', action='store_true', help="If specified, run the Neural Network implementation")
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--svm', action='store_true', help="If specified, run the SVM implementation.")
+    parser.add_argument('--nn', action='store_true', help="If specified, run the Neural Network implementation.")
     parser.add_argument('--count', '-c', type=int, default=1000,
-                        help="The number of pieces of data to use. 0 for all data")
+                        help="The number of pieces of data to use. 0 for all data.")
+    parser.add_argument('--df', action='store_true', help="If specified, pull data into a Pandas DataFrame.")
+    parser.add_argument('--pca', action='store_true', help="If specified, run PCA analysis. Requires --df as well.")
+
     args = parser.parse_args()
 
     print(f"Pulling {args.count} examples from the CSV")
@@ -29,21 +35,29 @@ def main():
 
     print(f"Requesting {data_count} rows of data.")
 
-    full_data = get_examples_from_csv(DATA_PATH, data_count, ret_simple_matrix=True)
+    data, labels = get_df_from_csv(DATA_PATH, data_count)
+    # print(list(data.columns.values))
+    train_set, train_labels, valid_set, valid_labels, test_set, test_labels = split_df(data, labels)
+    # print(train_set.head())
 
-    train_set, valid_set, test_set = split_simple_data(full_data)
+    if args.pca:
+        print("Scaling data")
+        sc = StandardScaler()
+        x_train = sc.fit_transform(train_set)
+        x_test = sc.transform(test_set)
 
-    # train_set, valid_set, test_set = split_data(full_data, train_pct=60, valid_pct=20)
+        print("Applying PCA")
+        pca = PCA()
+        x_train = pca.fit_transform(x_train)
+        x_test = pca.transform(x_test)
+        pca_vals = pca.explained_variance_ratio_
+        print(pca_vals)
 
-    print(f"Train size: {train_set.labels.shape[0]}. "
-          f"Valid size: {valid_set.labels.shape[0]}. "
-          f"Test size: {test_set.labels.shape[0]}")
+        if args.nn:
+            nn_main(train_set, train_labels, valid_set, valid_labels, test_set, test_labels)
 
-    if args.nn:
-        nn_main(train_set, valid_set, test_set)
-
-    if args.svm:
-        svm_main(train_set, valid_set, test_set)
+        if args.svm:
+            svm_main(train_set, train_labels, valid_set, valid_labels, test_set, test_labels)
 
 
 if __name__ == '__main__':

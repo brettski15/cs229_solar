@@ -35,6 +35,7 @@ def main(train_set, valid_set, test_set):
     plt.legend()
     plt.show()
 
+
     print(f"Found {len(train_set.X)} examples with {len(train_set.labels)} labels.")
 
     train_data = train_set.X

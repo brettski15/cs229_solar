@@ -1,1 +1,6 @@
+keras
+matplotlib
 numpy
+pandas
+sklearn
+tensorflow
