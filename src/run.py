@@ -12,7 +12,6 @@ RESERVE_TEST_DATA = 14500
 
 
 def main():
-    parser = argparse.ArgumentParser()
     parser.add_argument('--svm', action='store_true', help="If specified, run the SVM implementation")
     parser.add_argument('--nn', action='store_true', help="If specified, run the Neural Network implementation")
     parser.add_argument('--count', '-c', type=int, default=1000,
