@@ -1,4 +1,4 @@
-def main(train_set, valid_set, test_set):
+def main(train_set, train_labels, valid_set, valid_labels, test_set, test_labels):
     print("Running SVM main")
 
     print(f"Found {len(train_set.X)} examples with {len(train_set.labels)} labels.")

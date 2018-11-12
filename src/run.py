@@ -35,39 +35,29 @@ def main():
 
     print(f"Requesting {data_count} rows of data.")
 
-    if args.df:
-        data, labels = get_df_from_csv(DATA_PATH, data_count)
-        # print(list(data.columns.values))
-        train_set, train_labels, valid_set, valid_labels, test_set, test_labels = split_df(data, labels)
-        # print(train_set.head())
+    data, labels = get_df_from_csv(DATA_PATH, data_count)
+    # print(list(data.columns.values))
+    train_set, train_labels, valid_set, valid_labels, test_set, test_labels = split_df(data, labels)
+    # print(train_set.head())
 
-        if args.pca:
-            print("Scaling data")
-            sc = StandardScaler()
-            x_train = sc.fit_transform(train_set)
-            x_test = sc.transform(test_set)
+    if args.pca:
+        print("Scaling data")
+        sc = StandardScaler()
+        x_train = sc.fit_transform(train_set)
+        x_test = sc.transform(test_set)
 
-            print("Applying PCA")
-            pca = PCA()
-            x_train = pca.fit_transform(x_train)
-            x_test = pca.transform(x_test)
-            pca_vals = pca.explained_variance_ratio_
-            print(pca_vals)
-    else:
-        full_data = get_examples_from_csv(DATA_PATH, data_count, ret_simple_matrix=True)
-        train_set, valid_set, test_set = split_simple_data(full_data)
-
-        # train_set, valid_set, test_set = split_data(full_data, train_pct=60, valid_pct=20)
-
-        print(f"Train size: {train_set.labels.shape[0]}. "
-              f"Valid size: {valid_set.labels.shape[0]}. "
-              f"Test size: {test_set.labels.shape[0]}")
+        print("Applying PCA")
+        pca = PCA()
+        x_train = pca.fit_transform(x_train)
+        x_test = pca.transform(x_test)
+        pca_vals = pca.explained_variance_ratio_
+        print(pca_vals)
 
         if args.nn:
-            nn_main(train_set, valid_set, test_set)
+            nn_main(train_set, train_labels, valid_set, valid_labels, test_set, test_labels)
 
         if args.svm:
-            svm_main(train_set, valid_set, test_set)
+            svm_main(train_set, train_labels, valid_set, valid_labels, test_set, test_labels)
 
 
 if __name__ == '__main__':
