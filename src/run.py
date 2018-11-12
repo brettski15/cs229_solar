@@ -51,7 +51,8 @@ def main():
             pca = PCA()
             x_train = pca.fit_transform(x_train)
             x_test = pca.transform(x_test)
-            print(pca.explained_variance_ratio_)
+            pca_vals = pca.explained_variance_ratio_
+            print(pca_vals)
     else:
         full_data = get_examples_from_csv(DATA_PATH, data_count, ret_simple_matrix=True)
         train_set, valid_set, test_set = split_simple_data(full_data)
