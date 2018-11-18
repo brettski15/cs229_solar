@@ -21,7 +21,7 @@ def main(train_set, train_labels, valid_set, valid_labels, test_set, test_labels
     act_funcs = np.array(['relu', 'relu', 'relu'])
     train_epochs = 150
     
-    NN_train(x, y, layer_dims, act_funcs, train_epochs)
+    NN_train(train_set, train_labels, layer_dims, act_funcs, train_epochs)
     NN_predict()
     
 def NN_train(train_data, train_labels, layer_dims, act_funcs, train_epochs):

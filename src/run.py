@@ -40,12 +40,12 @@ def main():
     train_set, train_labels, valid_set, valid_labels, test_set, test_labels = split_df(data, labels)
     # print(train_set.head())
 
-    if args.pca:
-        print("Scaling data")
-        sc = StandardScaler()
-        x_train = sc.fit_transform(train_set)
-        x_test = sc.transform(test_set)
+    print("Scaling data")
+    sc = StandardScaler()
+    x_train = sc.fit_transform(train_set)
+    x_test = sc.transform(test_set)
 
+    if args.pca:
         print("Applying PCA")
         pca = PCA()
         x_train = pca.fit_transform(x_train)
@@ -53,11 +53,11 @@ def main():
         pca_vals = pca.explained_variance_ratio_
         print(pca_vals)
 
-        if args.nn:
-            nn_main(train_set, train_labels, valid_set, valid_labels, test_set, test_labels)
+    if args.nn:
+        nn_main(train_set, train_labels, valid_set, valid_labels, test_set, test_labels)
 
-        if args.svm:
-            svm_main(train_set, train_labels, valid_set, valid_labels, test_set, test_labels)
+    if args.svm:
+        svm_main(train_set, train_labels, valid_set, valid_labels, test_set, test_labels)
 
 
 if __name__ == '__main__':
