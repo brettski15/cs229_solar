@@ -32,14 +32,17 @@ def pca_main(train_set, train_labels, test_set, test_labels):
     stats = train_labels.describe()
     label_ranges = {}
 
-    num_colors = 10
+    num_colors = 8
     # colors = ['b', 'g', 'r', 'm', 'k', 'c', 'y']
-    colors = plt.cm.rainbow(np.linspace(0, 1, num_colors))
-    # random.shuffle(colors)
+    cmap = plt.cm.get_cmap('hsv', num_colors)
+    colors = []
+    for i in range(num_colors):
+        colors.append(cmap(i))
+    random.shuffle(colors)
 
     for l in train_labels.columns:
         print(f"Plotting PCA analysis for {l}")
-        step = math.ceil((stats[l]['max'] - stats[l]['min']) / len(colors))
+        step = math.ceil((stats[l]['max'] - stats[l]['min']) / num_colors)
         range_max = 0
         label_ranges[l] = []
         while range_max < stats[l]['max']:
