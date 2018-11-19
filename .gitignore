@@ -109,3 +109,5 @@ venv.bak/
 
 data/*.csv
 *.DS_Store
+
+output_plots/*.png

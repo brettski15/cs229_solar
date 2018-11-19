@@ -1,12 +1,9 @@
 import argparse
-import pandas as pd
-from sklearn import preprocessing
-from sklearn.preprocessing import StandardScaler
-from sklearn.decomposition import PCA
 
 from neural_network.neural_solar import main as nn_main
 from svm.svm_solar import main as svm_main
 from data_processing.parse_csv import get_examples_from_csv, split_simple_data, get_df_from_csv, split_df
+from data_processing.pca import  pca_main
 
 
 DATA_PATH = "../data/tract_all.csv"
@@ -41,24 +38,8 @@ def main():
     train_set, train_labels, valid_set, valid_labels, test_set, test_labels = split_df(data, labels)
     # print(train_set.head())
 
-    print("Scaling data")
-    sc = StandardScaler()
-    train_set.drop(columns=['index'], inplace=True)
-    test_set.drop(columns=['index'], inplace=True)
-    x_train = sc.fit_transform(train_set)
-    x_test = sc.transform(test_set)
-    # data_scaled = pd.DataFrame(preprocessing.scale(train_set), columns=train_set.columns)
-
     if args.pca:
-        print("Applying PCA")
-        pca = PCA(n_components=2)
-        x_train = pca.fit_transform(x_train)
-        # x_test = pca.transform(x_test)
-        pca_vals = pca.explained_variance_ratio_
-        # print(pca_vals)
-        # print(pca.components_)
-        pca_df = pd.DataFrame(pca.components_, columns=train_set.columns, index=['PC-1', 'PC-2'])
-        print()
+        pca_main(train_set, train_labels, test_set, test_labels)
 
     if args.nn:
         nn_main(train_set, train_labels, valid_set, valid_labels, test_set, test_labels)
