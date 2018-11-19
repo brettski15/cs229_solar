@@ -47,5 +47,5 @@ def main(train_set, valid_set, test_set):
     # See above for how to access the data and labels
 
 
- if __name__ == '__main__':
+if __name__ == '__main__':
      print("Please use `python run.py --svm` to run this model")
