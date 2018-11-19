@@ -12,7 +12,7 @@ PLOT_DIR = '../output_plots'
 
 
 def pca_main(train_set, train_labels, test_set, test_labels):
-    print("Scaling zdata")
+    print("Scaling data")
     sc = StandardScaler()
     train_set.drop(columns=['index'], inplace=True)
     test_set.drop(columns=['index'], inplace=True)
@@ -32,9 +32,9 @@ def pca_main(train_set, train_labels, test_set, test_labels):
     stats = train_labels.describe()
     label_ranges = {}
 
-    num_colors = 8
+    num_colors = 10
     # colors = ['b', 'g', 'r', 'm', 'k', 'c', 'y']
-    cmap = plt.cm.get_cmap('hsv', num_colors)
+    cmap = plt.cm.get_cmap('Paired', num_colors)
     colors = []
     for i in range(num_colors):
         colors.append(cmap(i))
