@@ -2,7 +2,8 @@ import numpy as np
 import tensorflow as tf
 import matplotlib.pyplot as plt
 import os
-from tensorflow import keras as K
+#from tensorflow import keras as K
+import keras as K
 
 # https://medium.com/@rajatgupta310198/getting-started-with-neural-network-for-regression-and-tensorflow-58ad3bd75223
 # https://www.kaggle.com/zoupet/neural-network-model-for-house-prices-tensorflow
