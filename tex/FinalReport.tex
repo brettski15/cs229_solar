@@ -1,0 +1,152 @@
+\documentclass{article}
+
+\usepackage[utf8]{inputenc} % allow utf-8 input
+\usepackage[T1]{fontenc}    % use 8-bit T1 fonts
+\usepackage{hyperref}       % hyperlinks
+\usepackage{url}            % simple URL typesetting
+\usepackage{booktabs}       % professional-quality tables
+\usepackage{amsfonts}       % blackboard math symbols
+\usepackage{nicefrac}       % compact symbols for 1/2, etc.
+\usepackage{microtype}      % microtypography
+\usepackage{graphicx,caption}
+\usepackage{epstopdf,subcaption}
+\usepackage{float}
+\usepackage{enumitem}
+\graphicspath{ {images/} }
+
+\title{Using Census Data to Predict Solar Energy System Density per Census Tract}
+
+\author{ Eddie Sun: \texttt{edsun@stanford.edu}\\
+  Jeremy Chen: \texttt{jchen@stanford.edu}\\
+  Brett Szalapski: \texttt{brettski@stanford.edu}\\
+%  Code: \url{https://github.com/brettski15/cs229_solar}\\
+}
+
+\begin{document}
+	
+	\maketitle
+
+%	\begin{abstract}
+%	  Put an abstract here later.
+%	\end{abstract}
+
+	\section{Motivation}
+	
+	New renewable energy sources require improvements to the current electric grid. The recent surge in the number of intermittent energy generation facilities, such as solar and wind farms, has resulted in a need for improved monitoring and control methods for the electric grid due to increased supply-side uncertainty. Mitigating this uncertainty in the amount of electricity produced would greatly increase power generation efficiency.
+	
+	One major component of supply-side uncertainty comes from residential solar panel installations. Today, installing solar panels on residential homes is already easy and affordable, and will only get easier and cheaper as time progresses. As a result, it is difficult to know how many solar panels exist and supply power to the grid. If energy companies had more insight into this piece of the supply-side puzzle, they could better model an area’s energy production and balance power plant production accordingly, resulting in lower energy costs and less environmental impact.
+	
+%	For this project, the team will design a predictive model for solar panel deployment. This model will predict the amount of solar panels for a given area using U.S. census data as input features. The features of each census tract include things such as population, education level, gini index, housing cost, climate info, and politics, among 174 others.
+	
+	
+	\section{Dataset}
+	\label{dataset}
+	
+	The dataset has three unique labels \textemdash the number of solar panels in each census tract, the number of solar tiles, and the total tile area \textemdash along with around 180 demographic statistics of each respective census tract\textsuperscript{[00]}. The labels were determined from a previous project originating from ES’s research group, which used deep learning to count solar panels from satellite images\textsuperscript{[0]}. The dataset contains around 75,000 data points. Using this dataset, we plan to create a supervised-learning algorithm using census data to predict the number of solar panels or solar systems in each census tract.
+	
+	
+	\section{Previous Work}
+	\label{previous_work}
+	
+	There are surprisingly few previous published studies that use existing census data to make demographic predictions compared to the amount of census data available; the few that were found are described here. The University of California, Irvine’s (UCI) 1996 census income dataset has been used to predict whether income levels are below or above \$50,000/yr using logistic regression and random forests, achieving classification accuracy of around 92\%\textsuperscript{[1]}. A previous CS229 project accomplished the same task with the same dataset, also using random forests and logistic regression\textsuperscript{[2]}.
+	
+	Neural networks have also been used in conjunction with census data. Wang et al predicted population counts using a standard feed-forward neural network with 4-6 hidden layers\textsuperscript{[3]}, however the main focus of this work was to compare the neural network performance with that of linear regression. Census and weather data have also been used to augment crime data to forecasts crime in Chicago and Portland as a multi-classification problem\textsuperscript{[4]}. The authors accomplished this with several neural network architectures: feed-forward, convolutional, recurrent, and recurrent convolutional, with the best result being about 75\% accuracy. A third deep-learning study predicted age and gender from cell-phone metadata using a convolutional network\textsuperscript{[5]}. 
+	
+	To our knowledge, the soon-to-be-published paper from which the dataset is obtained is the first to utilize machine learning for large-scale surveying of solar panels. Near-term solar power forecasting using machine learning is more commonplace\textsuperscript{[6]}, but this project and the aforementioned paper are among the first to study system installation counts, which are more correlated with long-term solar power forecasting and market sizing.
+	
+	
+	\section{Methods}
+	
+	Since previous published work using census data to make predictions is somewhat scarce, we created two different machine-learning algorithms: support vector regression (SVR), and a fully connected neural network (NN). These two algorithms were chosen because both can learn highly-nonlinear trend-lines, and we do not suspect the data is linear. For the SVR algorithm, we performed principal component analysis (PCA) in order to decrease the number of input features. As of this milestone, both models have been run against subsets of our dataset with promising results. The following sections detail the PCA, SVR, and Neural Network progress.
+	
+	
+	\subsection{PCA}
+	With ~180 features to build a model on, we want to explore the possibility of reducing the number of features of the dataset used for training the models. The first implementation for doing so is Primary Component Analysis. The initial goal was to reduce the number of features to two primary components so that the data could be plotted and examined for any obvious trends. Figures \ref*{fig:tile_count_pca}, \ref*{fig:system_count_pca}, and \ref*{fig:tile_area_pca} show that Tile Area may be the least productive label to use. The strongest trend is in the System Count label, so initial efforts will be focused on that label.
+	
+	\setlength{\belowcaptionskip}{-10pt}
+	\begin{figure}[H]
+		\begin{subfigure}{.5\textwidth}
+			\centering
+			\includegraphics[width=4cm]{"2_pca_tile_count"}
+			\caption{Tile Count}
+			\label{fig:tile_count_pca}
+		\end{subfigure}
+		\begin{subfigure}{.5\textwidth}
+			\centering
+			\includegraphics[width=4cm]{"2_pca_solar_system_count"}
+			\caption{System Count}
+			\label{fig:system_count_pca}
+		\end{subfigure}
+	\end{figure}
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=4cm]{"2_pca_total_panel_area"}
+		\caption{Tile Area}
+		\label{fig:tile_area_pca}
+	\end{figure}
+	
+	\subsection{SVR}
+	One of the first experiments carried out was an SVR model of the data. This simple model establishes a baseline for our future experiments, and given the promising results of the linear kernel implementation, could prove to be one of the strongest models.
+	
+	We implemented a kernelized-SVR with three different kernels: the third-degree polynomial kernel, the linear kernel, and the RBF kernel. Each model is trained under 604 examples and the average R2 is validated against a 70-example validation set. In the SVR model, the penalty parameter is set at 1000, kernel cache size is 200, and the kernel coefficient  is set at $\frac{1}{n \sigma_x}$ where n is the number of features. The results of these models are compared in Figure \ref*{fig:svr_kern}. Based on the prediction error on the validation set, SVR using the linear kernel has much better accuracy compared to the RBF polynomial kernels. Model selection and parameter tuning was performed with SciKitLearn’s GridSearchCV module.
+	
+%TODO: Explain what \sigma_X is
+	
+	\begin{figure}[H]
+		\centering
+		\includegraphics[scale=0.15]{"svr_kernels"}
+		\caption{Comparison of SVR Kernel Performance}
+		\label{fig:svr_kern}
+	\end{figure}
+	
+	\subsection{Neural Network}
+	
+	For the milestone, the goal was to simply have the neural network run without errors and make a prediction with reasonable accuracy. This was accomplished. 
+	
+	The neural network is a standard feed-forward NN coded using \texttt{Keras}. Currently, the model consists of 2 hidden layers with 64 neurons each, ReLU activation functions for each layer, RMSprop as the optimizer, a learning rate of 0.001, batch size of 64, and is trained for 100 epochs. For debugging purposes, the model was only trained on 750 examples split 80/10/10 for train, dev, and test. Results are shown in Figure \ref*{fig:nn_perf}. Note that optimization will be performed between the Milestone and the final report, but the network shows promising initial results.
+	
+	\begin{figure}[H]
+		\centering
+		\includegraphics[scale=0.4]{"NN_error_analysis"}
+		\caption{Neural Network Performance: \textbf{Top left:} L2 loss on the train and dev data. \textbf{Top right:} $R^2$ coefficient of the trend line on the train and dev data. \textbf{Bottom left:} Predictions made by the network on the test data features plotted against the test data labels. \textbf{Bottom right:} Histogram of the error (difference) between the model predictions and the true test labels.}
+		\label{fig:nn_perf}
+	\end{figure}	
+	
+	
+	\section{Future Work}
+	Each of the three areas has ongoing work. More conclusions regarding which features to use and which to eliminate will come from PCA analysis, which has yet to be used to pare down which features are fed into the other models. Furthermore, there are a couple of categorical columns, such as state, which have not be used yet. We may look to add these columns.
+	
+	The SVR implementation will need to be run against the entire dataset and retuned with the larger train and dev sets accordingly. Kernel selection will be reevaluated as well.
+	
+	The Neural Network hyperparameters will need tuning along with using the rest of the dataset. The network will assist with feature selection as well using numerical gradients.
+	
+	Finally, our team is seeking a direction to take our project beyond a basic application project, \textit{something on which we would appreciate feedback and guidance.}
+	
+	\section*{Contributions}
+		\begin{itemize}[noitemsep,nolistsep]
+			\item Eddie: Neural network implementation, write-up, research on previous work
+			\item Jeremy: SVR implementation and write-up
+			\item Brett: PCA implementation and write-up, data parsing and preprocessing, document formatting and editing
+		\end{itemize}
+	
+	\section*{References}
+	\smallskip
+	\scriptsize
+	\setlength{\parindent}{0in}
+	[00] American Community Survey. 2015.  2015 ACS 1-year estimates [data file]. Retrieved from http://factfinder.census.gov\\ [0.5pt]
+	
+	[0] Yu, Jiafan, et al. “DeepSolar: A Machine Learning Framework to Efficiently Construct Solar Deployment Database in the United States.” Joule (2019), accepted.\\ [0.5pt]
+	
+	[1] Sheremata, Jeff. “Machine Learning Income Prediction Using Census Data.” Medium.com, Medium, 11 Jan. 2017.\\ [0.5pt]
+	
+	[2] Voisin, M. Prediction of Earnings Based on Demographic and Employment Data.CS 229 Report, 2016.\\ [0.5pt]
+	
+	[3] Wang, Jun, et al. “Advances in Neural Networks - ISNN 2006.” Lecture Notes in Computer Science, May 2006, doi:10.1007/11759966.\\ [0.5pt]
+	
+	[4] Stec, Alexander, and Diego Klabjan. “Forecasting Crime with Deep Learning.” ArXiv [Stat.ML], 5 June 2018.\\ [0.5pt]
+	
+	[5] Felbo, Bjarke, et al. “Using Deep Learning to Predict Demographics from Mobile Phone Metadata.” ICLR Workshop Track, 13 Feb. 2016.\\ [0.5pt]
+	
+	[6] Isaksson, Emil, and Mikael Karpe Conde. “Solar Power Forecasting with Machine Learning Techniques.” KTH Royal Institute of Technology, Royal Institute of Technology, 2017.\\ [0.5pt]
+
+\end{document}

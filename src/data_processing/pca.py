@@ -32,7 +32,7 @@ def pca_main(train_set, train_labels, test_set, test_labels):
     stats = train_labels.describe()
     label_ranges = {}
 
-    num_colors = 10
+    num_colors = 30
     # colors = ['b', 'g', 'r', 'm', 'k', 'c', 'y']
     cmap = plt.cm.get_cmap('Paired', num_colors)
     colors = []
