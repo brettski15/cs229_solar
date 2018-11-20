@@ -43,17 +43,17 @@
 	\section{Dataset}
 	\label{dataset}
 	
-	The dataset has three unique labels \textemdash the number of solar panels in each census tract, the number of solar tiles, and the total tile area \textemdash along with around 180 demographic statistics of each respective census tract\textsuperscript{[0]}. The labels were determined from a previous project originating from ES’s research group, which used deep learning to count solar panels from satellite images\textsuperscript{[1]}. The dataset contains around 75,000 data points. Using this dataset, we plan to create a supervised-learning algorithm using census data to predict the number of solar panels or solar systems in each census tract.
+	The dataset has three unique labels \textemdash the number of solar panels in each census tract, the number of solar tiles, and the total tile area \textemdash along with around 180 demographic statistics of each respective census tract\textsuperscript{[1]}. The labels were determined from a previous project originating from ES’s research group, which used deep learning to count solar panels from satellite images\textsuperscript{[2]}. The dataset contains around 75,000 data points. Using this dataset, we plan to create a supervised-learning algorithm using census data to predict the number of solar panels or solar systems in each census tract.
 	
 	
 	\section{Previous Work}
 	\label{previous_work}
 	
-	There are surprisingly few previous published studies that use existing census data to make demographic predictions compared to the amount of census data available; the few that were found are described here. The University of California, Irvine’s (UCI) 1996 census income dataset has been used to predict whether income levels are below or above \$50,000/yr using logistic regression and random forests, achieving classification accuracy of around 92\%\textsuperscript{[2]}. A previous CS229 project accomplished the same task with the same dataset, also using random forests and logistic regression\textsuperscript{[3]}.
+	There are surprisingly few previous published studies that use existing census data to make demographic predictions compared to the amount of census data available; the few that were found are described here. The University of California, Irvine’s (UCI) 1996 census income dataset has been used to predict whether income levels are below or above \$50,000/yr using logistic regression and random forests, achieving classification accuracy of around 92\%\textsuperscript{[3]}. A previous CS229 project accomplished the same task with the same dataset, also using random forests and logistic regression\textsuperscript{[4]}.
 	
-	Neural networks have also been used in conjunction with census data. Wang et al predicted population counts using a standard feed-forward neural network with 4-6 hidden layers\textsuperscript{[4]}, however the main focus of this work was to compare the neural network performance with that of linear regression. Census and weather data have also been used to augment crime data to forecasts crime in Chicago and Portland as a multi-classification problem\textsuperscript{[5]}. The authors accomplished this with several neural network architectures: feed-forward, convolutional, recurrent, and recurrent convolutional, with the best result being about 75\% accuracy. A third deep-learning study predicted age and gender from cell-phone metadata using a convolutional network\textsuperscript{[6]}. 
+	Neural networks have also been used in conjunction with census data. Wang et al predicted population counts using a standard feed-forward neural network with 4-6 hidden layers\textsuperscript{[5]}, however the main focus of this work was to compare the neural network performance with that of linear regression. Census and weather data have also been used to augment crime data to forecasts crime in Chicago and Portland as a multi-classification problem\textsuperscript{[6]}. The authors accomplished this with several neural network architectures: feed-forward, convolutional, recurrent, and recurrent convolutional, with the best result being about 75\% accuracy. A third deep-learning study predicted age and gender from cell-phone metadata using a convolutional network\textsuperscript{[7]}. 
 	
-	To our knowledge, the soon-to-be-published paper from which the dataset is obtained is the first to utilize machine learning for large-scale surveying of solar panels. Near-term solar power forecasting using machine learning is more commonplace\textsuperscript{[7]}, but this project and the aforementioned paper are among the first to study system installation counts, which are more correlated with long-term solar power forecasting and market sizing.
+	To our knowledge, the soon-to-be-published paper from which the dataset is obtained is the first to utilize machine learning for large-scale surveying of solar panels. Near-term solar power forecasting using machine learning is more commonplace\textsuperscript{[8]}, but this project and the aforementioned paper are among the first to study system installation counts, which are more correlated with long-term solar power forecasting and market sizing.
 	
 	
 	\section{Methods}
@@ -134,20 +134,20 @@
 	\smallskip
 	\scriptsize
 	\setlength{\parindent}{0in}
-	[0] American Community Survey. 2015.  2015 ACS 1-year estimates [data file]. Retrieved from http://factfinder.census.gov\\ [0.5pt]
+	[1] American Community Survey. 2015.  2015 ACS 1-year estimates [data file]. Retrieved from http://factfinder.census.gov\\ [0.5pt]
 	
-	[1] Yu, Jiafan, et al. “DeepSolar: A Machine Learning Framework to Efficiently Construct Solar Deployment Database in the United States.” Joule (2019), accepted.\\ [0.5pt]
+	[2] Yu, Jiafan, et al. “DeepSolar: A Machine Learning Framework to Efficiently Construct Solar Deployment Database in the United States.” Joule (2019), accepted.\\ [0.5pt]
 	
-	[2] Sheremata, Jeff. “Machine Learning Income Prediction Using Census Data.” Medium.com, Medium, 11 Jan. 2017.\\ [0.5pt]
+	[3] Sheremata, Jeff. “Machine Learning Income Prediction Using Census Data.” Medium.com, Medium, 11 Jan. 2017.\\ [0.5pt]
 	
-	[3] Voisin, M. Prediction of Earnings Based on Demographic and Employment Data.CS 229 Report, 2016.\\ [0.5pt]
+	[4] Voisin, M. Prediction of Earnings Based on Demographic and Employment Data.CS 229 Report, 2016.\\ [0.5pt]
 	
-	[4] Wang, Jun, et al. “Advances in Neural Networks - ISNN 2006.” Lecture Notes in Computer Science, May 2006, doi:10.1007/11759966.\\ [0.5pt]
+	[5] Wang, Jun, et al. “Advances in Neural Networks - ISNN 2006.” Lecture Notes in Computer Science, May 2006, doi:10.1007/11759966.\\ [0.5pt]
 	
-	[5] Stec, Alexander, and Diego Klabjan. “Forecasting Crime with Deep Learning.” ArXiv [Stat.ML], 5 June 2018.\\ [0.5pt]
+	[6] Stec, Alexander, and Diego Klabjan. “Forecasting Crime with Deep Learning.” ArXiv [Stat.ML], 5 June 2018.\\ [0.5pt]
 	
-	[6] Felbo, Bjarke, et al. “Using Deep Learning to Predict Demographics from Mobile Phone Metadata.” ICLR Workshop Track, 13 Feb. 2016.\\ [0.5pt]
+	[7] Felbo, Bjarke, et al. “Using Deep Learning to Predict Demographics from Mobile Phone Metadata.” ICLR Workshop Track, 13 Feb. 2016.\\ [0.5pt]
 	
-	[7] Isaksson, Emil, and Mikael Karpe Conde. “Solar Power Forecasting with Machine Learning Techniques.” KTH Royal Institute of Technology, Royal Institute of Technology, 2017.\\ [0.5pt]
+	[8] Isaksson, Emil, and Mikael Karpe Conde. “Solar Power Forecasting with Machine Learning Techniques.” KTH Royal Institute of Technology, Royal Institute of Technology, 2017.\\ [0.5pt]
 
 \end{document}
