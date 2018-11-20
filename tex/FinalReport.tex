@@ -9,24 +9,26 @@
 \usepackage{nicefrac}       % compact symbols for 1/2, etc.
 \usepackage{microtype}      % microtypography
 \usepackage{graphicx,caption}
-\usepackage{epstopdf,subcaption}
 \usepackage{float}
 \usepackage{enumitem}
+\usepackage{titling}
+\usepackage{mwe}
+\usepackage{subfig}
 \graphicspath{ {images/} }
 \usepackage[margin=1in]{geometry}
 
-\title{Using Census Data to Predict Solar Energy System Density per Census Tract}
+\title{Using Census Data to Predict Solar Panel Density per Census Tract\vspace{-2ex}}
+\setlength{\droptitle}{-10em}
 
-\author{ Eddie Sun: \texttt{edsun@stanford.edu}\\
-  Jeremy Chen: \texttt{jchen@stanford.edu}\\
-  Brett Szalapski: \texttt{brettski@stanford.edu}\\
+\author{Eddie Sun: \texttt{eddiesun@stanford.edu} | Jeremy Chen: \texttt{czm@stanford.edu} \\
+	Brett Szalapski: \texttt{brettski@stanford.edu}
 %  Code: \url{https://github.com/brettski15/cs229_solar}\\
-}
+\vspace{-1ex}}
+\date{\vspace{-6ex}}
 
 \begin{document}
 	
 	\maketitle
-
 %	\begin{abstract}
 %	  Put an abstract here later.
 %	\end{abstract}
@@ -53,7 +55,7 @@
 	
 	Neural networks have also been used in conjunction with census data. Wang et al predicted population counts using a standard feed-forward neural network with 4-6 hidden layers\textsuperscript{[5]}, however the main focus of this work was to compare the neural network performance with that of linear regression. Census and weather data have also been used to augment crime data to forecasts crime in Chicago and Portland as a multi-classification problem\textsuperscript{[6]}. The authors accomplished this with several neural network architectures: feed-forward, convolutional, recurrent, and recurrent convolutional, with the best result being about 75\% accuracy. A third deep-learning study predicted age and gender from cell-phone metadata using a convolutional network\textsuperscript{[7]}. 
 	
-	To our knowledge, the soon-to-be-published paper from which the dataset is obtained is the first to utilize machine learning for large-scale surveying of solar panels. Near-term solar power forecasting using machine learning is more commonplace\textsuperscript{[8]}, but this project and the aforementioned paper are among the first to study system installation counts, which are more correlated with long-term solar power forecasting and market sizing.
+	To our knowledge, the soon-to-be-published paper from which the dataset is obtained is the first to utilize machine learning for large-scale surveying of solar panels. Near-term solar power forecasting using machine learning is more commonplace\textsuperscript{[8]}, but this project and the aforementioned paper\textsuperscript{2} are among the first to study system installation counts, which are more correlated with long-term solar power forecasting and market sizing.
 	
 	
 	\section{Methods}
@@ -62,40 +64,55 @@
 	
 	
 	\subsection{PCA}
-	With ~180 features to build a model on, we want to explore the possibility of reducing the number of features of the dataset used for training the models. The first implementation for doing so is Primary Component Analysis. The initial goal was to reduce the number of features to two primary components so that the data could be plotted and examined for any obvious trends. Figures \ref*{fig:tile_count_pca}, \ref*{fig:system_count_pca}, and \ref*{fig:tile_area_pca} show that Tile Area may be the least productive label to use. The strongest trend is in the System Count label, so initial efforts will be focused on that label.
+	With 180 features to build a model on, we want to explore the possibility of reducing the number of features of the dataset used for training the models. The first implementation for doing so is Primary Component Analysis. The initial goal was to reduce the number of features to two primary components so that the data could be plotted and examined for any obvious trends. Figures \ref*{fig:tile_count_pca}, \ref*{fig:system_count_pca}, and \ref*{fig:tile_area_pca} show that tile count and system count have at least a weak trend, while tile area appears less separable.
 	
-	\setlength{\belowcaptionskip}{-10pt}
 	\begin{figure}[H]
-		\begin{subfigure}{.5\textwidth}
+		\begin{minipage}{.5\linewidth}
 			\centering
-			\includegraphics[width=4cm]{"2_pca_tile_count"}
-			\caption{Tile Count}
-			\label{fig:tile_count_pca}
-		\end{subfigure}
-		\begin{subfigure}{.5\textwidth}
+			\subfloat[]{\label{fig:tile_count_pca}\includegraphics[scale=.22]{"2_pca_tile_count"}}
+		\end{minipage}%
+		\begin{minipage}{.5\linewidth}
 			\centering
-			\includegraphics[width=4cm]{"2_pca_solar_system_count"}
-			\caption{System Count}
-			\label{fig:system_count_pca}
-		\end{subfigure}
-	\end{figure}
-	\begin{figure}[H]
+			\subfloat[]{\label{fig:system_count_pca}\includegraphics[scale=.22]{"2_pca_solar_system_count"}}
+		\end{minipage}\par\smallskip
 		\centering
-		\includegraphics[width=4cm]{"2_pca_total_panel_area"}
-		\caption{Tile Area}
-		\label{fig:tile_area_pca}
+		\subfloat[]{\label{fig:tile_area_pca}\includegraphics[scale=.22]{"2_pca_total_panel_area"}}
+		\caption{Two Component PCA on All Labels}
+		\label{fig:pca}
 	\end{figure}
+	
+%	\setlength{\belowcaptionskip}{-10pt}
+%	\begin{figure}[H]
+%		\begin{subfigure}{.5\textwidth}
+%			\centering
+%			\includegraphics[width=4cm]{"2_pca_tile_count"}
+%			\caption{Tile Count}
+%			\label{fig:tile_count_pca}
+%		\end{subfigure}
+%		\begin{subfigure}{.5\textwidth}
+%			\centering
+%			\includegraphics[width=4cm]{"2_pca_solar_system_count"}
+%			\caption{System Count}
+%			\label{fig:system_count_pca}
+%		\end{subfigure}
+%	\end{figure}
+%	\begin{figure}[H]
+%		\centering
+%		\includegraphics[width=4cm]{"2_pca_total_panel_area"}
+%		\caption{Tile Area}
+%		\label{fig:tile_area_pca}
+%	\end{figure}
 	
 	\subsection{SVR}
-	One of the first experiments carried out was an SVR model of the data. This simple model establishes a baseline for our future experiments, and given the promising results of the linear kernel implementation, could prove to be one of the strongest models.
+	One of the first experiments carried out was an SVR model of the data. This simple model establishes a baseline for our future experiments, and given the promising results of the linear kernel implementation, could prove to be one of the most accurate models.
 	
-	We implemented a kernelized-SVR with three different kernels: the third-degree polynomial kernel, the linear kernel, and the RBF kernel. Each model is trained under 604 examples and the average R2 is validated against a 70-example validation set. In the SVR model, the penalty parameter is set at 1000, kernel cache size is 200, and the kernel coefficient  is set at $\frac{1}{n \sigma_x}$ where n is the number of features. The results of these models are compared in Figure \ref*{fig:svr_kern}. Based on the prediction error on the validation set, SVR using the linear kernel has much better accuracy compared to the RBF polynomial kernels. Model selection and parameter tuning was performed with SciKitLearn’s GridSearchCV module.
+	We implemented a kernelized-SVR with three different kernels: the third-degree polynomial kernel, the linear kernel, and the RBF kernel. Each model is trained under 604 examples and the average R2 is validated against a 70-example validation set. In the SVR model, the penalty parameter is set at 1000, kernel cache size is 200, and the kernel coefficient  is set at $\frac{1}{n \sigma_x}$ where n is the number of features. The results of these models are compared in Figure \ref*{fig:svr_kern}. Based on the prediction error on the validation set, SVR using the linear kernel has much better accuracy compared to the RBF polynomial kernels. This surprises us, and we will look to investigate further.
 	
 %TODO: Explain what \sigma_X is
 	
 	\begin{figure}[H]
 		\centering
-		\includegraphics[scale=0.15]{"svr_kernels"}
+		\includegraphics[scale=0.18]{"svr_kernels"}
 		\caption{Comparison of SVR Kernel Performance}
 		\label{fig:svr_kern}
 	\end{figure}
@@ -115,13 +132,9 @@
 	
 	
 	\section{Future Work}
-	Each of the three areas has ongoing work. More conclusions regarding which features to use and which to eliminate will come from PCA analysis, which has yet to be used to pare down which features are fed into the other models. Furthermore, there are a couple of categorical columns, such as state, which have not be used yet. We may look to add these columns.
+	Each of the three areas has ongoing work. More conclusions regarding which features to use and which to eliminate will come from PCA analysis, which has yet to be used to pare down which features are fed into the other models. Furthermore, there are a couple of categorical columns, such as State, which have not be used yet. We may look to add these columns.
 	
-	The SVR implementation will need to be run against the entire dataset and retuned with the larger train and dev sets accordingly. Kernel selection will be reevaluated as well.
-	
-	The Neural Network hyperparameters will need tuning along with using the rest of the dataset. The network will assist with feature selection as well using numerical gradients.
-	
-	Finally, our team is seeking a direction to take our project beyond a basic application project, \textit{something on which we would appreciate feedback and guidance.}
+	The SVR implementation will need to be run against the entire dataset and re-tuned with the larger train and dev sets accordingly. Furthermore, the initial success of the linear SVR seems too-good-to-be-true, so we will investigate the success of this model. Kernel selection will be reevaluated as well. The Neural Network hyperparameters will need tuning along with using the rest of the dataset. The network will assist with feature selection as well, using numerical gradients.
 	
 	\section*{Contributions}
 		\begin{itemize}[noitemsep,nolistsep]
