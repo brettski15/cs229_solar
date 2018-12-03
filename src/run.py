@@ -24,10 +24,9 @@ def main():
 
     print(f"Pulling {args.count} examples from the CSV")
 
-    if args.count > TOTAL_DATA_SIZE - RESERVE_TEST_DATA or args.count <= 0:
-        data_count = TOTAL_DATA_SIZE - RESERVE_TEST_DATA
-        print(f"You have requested {args.count} rows of data, which would not leave {RESERVE_TEST_DATA} untouched rows "
-              f"to be used for production test data. Reducing your requested data size to {data_count}.")
+    if args.count > TOTAL_DATA_SIZE or args.count <= 0:
+        data_count = TOTAL_DATA_SIZE
+        print(f"Pulling ALL {TOTAL_DATA_SIZE} examples from the data set.")
     else:
         data_count = args.count
 

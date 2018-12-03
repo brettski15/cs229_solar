@@ -138,11 +138,27 @@ def get_df_from_csv(csv_path, partial_data=None):
                                encoding='ISO-8859-1')
         # rename_col = d_matrix.columns.values[0]
         # d_matrix.rename(columns={rename_col: 'idx'}, inplace=True)
-        d_matrix = d_matrix.drop(['county', 'state', 'electricity_price_transportation'], axis=1)
+        proxy_label_cols = [
+            'tile_count_res',
+            'tile_count_nonres',
+            'solar_system_count_res',
+            'solar_system_count_nonres',
+            'total_panel_area_res',
+            'total_panel_area_nonres'
+        ]
+        d_matrix = d_matrix.drop(proxy_label_cols, axis=1)
+        string_cols = [
+            'county',
+            'state',
+            'electricity_price_transportation'
+        ]
+        d_matrix = d_matrix.drop(string_cols, axis=1)
+
         d_matrix.replace([np.inf, -np.inf], np.nan)
         d_matrix.dropna(inplace=True)
         d_matrix = d_matrix.astype(float, errors='ignore')
         d_matrix = d_matrix.reset_index()
+        print(f"\033[91mAfter dropping rows with NaNs, {len(d_matrix.index)} rows remaining.\033[0m")
         # print(d_matrix)
 
         labels_matrix = d_matrix.ix[:, 1:4]
