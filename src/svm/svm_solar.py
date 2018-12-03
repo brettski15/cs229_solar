@@ -48,4 +48,4 @@ def main(train_set, valid_set, test_set):
 
 
 if __name__ == '__main__':
-     print("Please use `python run.py --svm` to run this model")
+    print("Please use `python run.py --svm` to run this model")
