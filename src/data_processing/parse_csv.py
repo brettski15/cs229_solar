@@ -182,7 +182,7 @@ def get_df_from_csv(csv_path, partial_data=None):
     d_matrix = d_matrix.reset_index()
     labels_matrix = labels_matrix.reset_index()
 
-    return (d_matrix, labels_matrix)
+    return d_matrix, labels_matrix
 
 
 def get_examples_from_csv(csv_path, partial_data=0, ret_simple_matrix=False):
@@ -191,6 +191,7 @@ def get_examples_from_csv(csv_path, partial_data=0, ret_simple_matrix=False):
     It also renames the first column (after removal) to 'index'
     :param csv_path: The path to the csv file to pull data from
     :param partial_data: (Optional) The number of examples to use from the dataset
+    :param ret_simple_matrix: (Optional) If true, return a simple matrix. Else return a SolarMatrix
     :return: SolarMatrix -- a structure containing all of the header names as well as all examples
     """
     if not os.path.isfile(csv_path):
@@ -219,7 +220,7 @@ def get_examples_from_csv(csv_path, partial_data=0, ret_simple_matrix=False):
                 # examples.append(ex)
                 labels.append(label)
                 num_examples += 1
-                if partial_data > 0 and num_examples >= partial_data:
+                if num_examples >= partial_data > 0:
                     print(f"Opting to not use all data for efficiency. Stopping at {partial_data} examples.")
                     break
 
