@@ -18,7 +18,7 @@ def plot_history(history):
     plt.legend()
     plt.xlabel('Epoch')
     plt.ylabel('Loss: Mean Squared Error')
-    plt.ylim([0, 500])
+    plt.ylim([0, 8000])
     plt.savefig('fig1.png', bbox_inches="tight")
 
     plt.figure(1, figsize=(3.75, 2.75))
@@ -27,14 +27,14 @@ def plot_history(history):
     plt.legend()
     plt.xlabel('Epoch')
     plt.ylabel('Mean Absolute Error')
-    plt.ylim([0, 6])
+    plt.ylim([0, 20])
     plt.savefig('fig2.png', bbox_inches="tight")
 
     plt.figure(2, figsize=(3.75, 2.75))
     plt.plot(epoch, train_r2, label = 'Train R2')
     plt.plot(epoch, val_r2, label = 'Valid R2')
     plt.legend()
-    plt.ylim([0.9, 1])
+    plt.ylim([0.7, 1])
     plt.xlabel('Epoch')
     plt.ylabel('R2 Coeff')
     plt.savefig('fig3.png', bbox_inches="tight")
@@ -56,7 +56,10 @@ def plot_test(predictions, Y_test):
     
     plt.figure(4, figsize=(3.75, 2.75))
     error = predictions - Y_test
-    plt.hist(error, bins = 10)
+    error = error[error > -200]
+    error = error[error < 200]
+    
+    plt.hist(error, bins = 20)
     plt.xlabel("Prediction Error")
     plt.ylabel("Count") 
     plt.savefig('fig5.png', bbox_inches="tight")
