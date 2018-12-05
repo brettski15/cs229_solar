@@ -45,6 +45,7 @@ def main():
     print(f"Requesting {data_count} rows of data.")
 
     data, labels = get_df_from_csv(DATA_PATH, data_count)
+    # data.to_csv('data.csv')
     # print(list(data.columns.values))
     train_set, train_labels, valid_set, valid_labels, test_set, test_labels = split_df(data, labels)
     # print(train_set.head())

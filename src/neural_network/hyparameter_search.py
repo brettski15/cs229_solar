@@ -1,46 +1,40 @@
 import numpy as np
 import tensorflow as tf
 from tensorflow import keras as K
-from .neural_plotter import plot_history, plot_test
+from neural_plotter import plot_history
 import pickle
+import pandas as pd
 
-# https://medium.com/@rajatgupta310198/getting-started-with-neural-network-for-regression-and-tensorflow-58ad3bd75223
-# https://www.kaggle.com/zoupet/neural-network-model-for-house-prices-tensorflow
-# https://www.tensorflow.org/tutorials/keras/basic_regression
-
-def save_data(save_filename, save_obj):
-    print('\nSaving data...')
-    
-    with open(save_filename, 'wb') as fi:
-        pickle.dump(save_obj, fi)
-        
-    print('Save data complete. Object saved as:', save_filename)
-    
-def main(train_set, train_labels, valid_set, valid_labels, test_set, test_labels):
+def main():
     print("Running NN main")
 
     # See above for how to access the data and labels
     
-    # hyperparameters
-    layer_dims = [256, 192, 160, 160, 160, 1]
-    activations = ['relu', 'relu', 'relu', 'relu', 'relu', 'relu']
-    dropout = [0.1, 0.25, 0.1, 0.35, 0.50, 0]
-    lr = 1e-4
-    num_epochs = 100
-    batch_size = 64
+    hyps = pd.read_csv('hyperparameter_search.csv')
+    print (hyps)
+    hyps = np.array(hyps)
     
-    save_path = 'model-and-weights.h5'
+    num_layers = hyps[0, :]
+    
+    layer_dims = []
+    dropout = []
+    l2_reg = []
+    
+    for i in range(hyps.shape[1]):
+        layer_dims.append([])
+        dropout.append([])
+        l2_reg.append([])    
+        
+    for i in range(hyps.shape[1]):
+        layer_dims[i] = hyps[1:7, i]
+        dropout[i] = hyps[7:13, i]
+        l2_reg[i] = hyps[13:, i]
+        
+    num_layers_h, layer_dims_h, dropout_h, l2_reg_h = np.array(num_layers), np.array(layer_dims), np.array(dropout), np.array(l2_reg)
+    stats = np.zeros((4, 20))
     
     # initialize X, Y
-    X_train = train_set
-    X_valid = valid_set
-    X_test = test_set
-    
-    Y_train = train_labels
-    Y_valid = valid_labels
-    Y_test = test_labels
-    
-    # save_data('data.h5', [X_train, Y_train, X_valid, Y_valid, X_test, Y_test])
+    X_train, Y_train, X_valid, Y_valid, X_test, Y_test = open_data('data.h5')
 
     # convert to np and slice X, Y
     X_train, Y_train, X_valid, Y_valid, X_test, Y_test = convert2np(X_train, Y_train, X_valid, Y_valid, X_test, Y_test)
@@ -51,24 +45,46 @@ def main(train_set, train_labels, valid_set, valid_labels, test_set, test_labels
     
     # normalize features
     X_train, X_valid, X_test = norm_features(X_train, X_valid, X_test)
+
+    # hyperparameters
     
-    # build model
-    n_train = X_train.shape[1]
-    model = build_model(layer_dims, activations, dropout, n_train, lr)
+    batch_size = 256
+    lr = 0.001
+    activations = ['relu', 'relu', 'relu', 'relu', 'relu', 'relu']
+    num_epochs = 50
+    
+    for i in range(20):
+        num_layers = num_layers_h[i]
+        layer_dims = layer_dims_h[i, :]
+        dropout = dropout_h[i, :]
+    
+        # build model
+        n_train = X_train.shape[1]
+        model = build_model(layer_dims, activations, dropout, n_train, lr, num_layers)
+            
+        # train model
+        model, history = train_model(model, X_train, Y_train, X_valid, Y_valid, batch_size, num_epochs)
         
-    # train model
-    model, history = train_model(model, X_train, Y_train, X_valid, Y_valid, batch_size, num_epochs)
-    model.save(save_path)
+        # plot train/valid loss (outputs graphs of MSE, MAE, and R2 Coeff.)
+        print_stats(history)
+        plot_history(history)
+        stats[0, i] = min(history.history['loss'])
+        stats[1, i] = min(history.history['val_loss'])
+        stats[2, i] = max(history.history['r2_keras'])
+        stats[3, i] = max(history.history['val_r2_keras'])
     
-    # plot train/valid loss (outputs graphs of MSE, MAE, and R2 Coeff.)
-    print_stats(history)
-    plot_history(history)
+    np.savetxt('stats.csv', stats)
+
+def open_data(save_filename):
+    print('\nOpening', save_filename, '...')
     
-    # predict using model
-    predictions = model.predict(X_test, verbose = 0)
-        
-    # plot test results (outputs graphs of labels vs. predictions and histogram of prediction error)
-    plot_test(predictions, Y_test)
+    with open(save_filename, 'rb') as fi:
+        load_temp = pickle.load(fi)
+    loaded = load_temp      
+
+    print('Open data complete.')
+    
+    return loaded
 
 def convert2np(X_train, Y_train, X_valid, Y_valid, X_test, Y_test):
     
@@ -118,7 +134,7 @@ def norm_features(X_train, X_valid, X_test):
 
     return X_train, X_valid, X_test  
 
-def build_model(layer_dims, activations, dropout, n_train, lr):
+def build_model(layer_dims, activations, dropout, n_train, lr, num_layers):
     
     print ('\n---------------Building NN Model----------------')
     
@@ -128,11 +144,14 @@ def build_model(layer_dims, activations, dropout, n_train, lr):
     model = K.models.Sequential()
     
     model.add(K.layers.Dense(layer_dims[0], input_dim = n_train))
+    model.add(K.layers.Dropout(dropout[0]))
     model.add(K.layers.Activation(activations[0]))
-    for i in range(1, len(layer_dims)):
+    for i in range(1, int(num_layers)):
         model.add(K.layers.Dense(layer_dims[i]))
         model.add(K.layers.Dropout(dropout[i]))
         model.add(K.layers.Activation(activations[i]))
+    model.add(K.layers.Dense(1))
+    model.add(K.layers.Activation('relu'))
 
 #    model.compile(loss = 'mse', optimizer = K.optimizers.Adam(lr), metrics = ['mae'])
     model.compile(loss = 'mse', optimizer = K.optimizers.Adam(lr), metrics = ['mae', r2_keras])
@@ -174,4 +193,4 @@ def r2_keras(y_true, y_pred):
     return ( 1 - SS_res/(SS_tot + K.backend.epsilon()) )
     
 if __name__ == '__main__':
-    print("Please use `python run.py --nn` to run this model")
+    main()
