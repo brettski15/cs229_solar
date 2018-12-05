@@ -1,6 +1,7 @@
 import argparse
 
 from neural_network.neural_solar import main as nn_main
+from neural_network.neural_solar import shuffle
 from svm.svm_solar import main as svm_main
 from data_processing.parse_csv import get_examples_from_csv, split_simple_data, get_df_from_csv, split_df
 from data_processing.pca import  pca_main
@@ -33,6 +34,7 @@ def main():
     print(f"Requesting {data_count} rows of data.")
 
     data, labels = get_df_from_csv(DATA_PATH, data_count)
+    data, lables = shuffle(data, labels)
     # print(list(data.columns.values))
     train_set, train_labels, valid_set, valid_labels, test_set, test_labels = split_df(data, labels)
     # print(train_set.head())
