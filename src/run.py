@@ -11,6 +11,18 @@ TOTAL_DATA_SIZE = 72538
 RESERVE_TEST_DATA = 14500
 
 
+# def shuffle(features, labels):
+#     np.random.seed(1992)
+#
+#     arg_order = np.random.random(labels.shape[0])
+#     order = np.argsort(arg_order)
+#
+#     features_shuffled = features[order]
+#     labels_shuffled = np.reshape(labels[order], (labels.shape[0], 1))
+#
+#     return features_shuffled, labels_shuffled
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--svm', action='store_true', help="If specified, run the SVM implementation.")
