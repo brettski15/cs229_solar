@@ -56,10 +56,10 @@ def plot_test(predictions, Y_test):
     
     plt.figure(4, figsize=(3.75, 2.75))
     error = predictions - Y_test
-    error = error[error > -200]
-    error = error[error < 200]
+    error = error[error > -100]
+    error = error[error < 100]
     
-    plt.hist(error, bins = 20)
+    plt.hist(error, bins = 10)
     plt.xlabel("Prediction Error")
     plt.ylabel("Count") 
     plt.savefig('fig5.png', bbox_inches="tight")
