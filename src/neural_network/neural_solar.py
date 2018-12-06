@@ -7,14 +7,6 @@ import pickle
 # https://medium.com/@rajatgupta310198/getting-started-with-neural-network-for-regression-and-tensorflow-58ad3bd75223
 # https://www.kaggle.com/zoupet/neural-network-model-for-house-prices-tensorflow
 # https://www.tensorflow.org/tutorials/keras/basic_regression
-
-def save_data(save_filename, save_obj):
-    print('\nSaving data...')
-    
-    with open(save_filename, 'wb') as fi:
-        pickle.dump(save_obj, fi)
-        
-    print('Save data complete. Object saved as:', save_filename)
     
 def main(train_set, train_labels, valid_set, valid_labels, test_set, test_labels):
     print("Running NN main")
@@ -26,10 +18,10 @@ def main(train_set, train_labels, valid_set, valid_labels, test_set, test_labels
     activations = ['relu', 'relu', 'relu', 'relu', 'relu', 'relu']
     dropout = [0.1, 0.25, 0.1, 0.35, 0.50, 0]
     lr = 1e-4
-    num_epochs = 100
+    num_epochs = 50
     batch_size = 64
     
-    save_path = 'z-model-and-weights.h5'
+    save_path = 'NN-model-and-weights.h5'
     
     # initialize X, Y
     X_train = train_set
@@ -70,6 +62,14 @@ def main(train_set, train_labels, valid_set, valid_labels, test_set, test_labels
 #    # plot test results (outputs graphs of labels vs. predictions and histogram of prediction error)
 #    plot_test(predictions, Y_test)
 
+def save_data(save_filename, save_obj):
+    print('\nSaving data...')
+    
+    with open(save_filename, 'wb') as fi:
+        pickle.dump(save_obj, fi)
+        
+    print('Save data complete. Object saved as:', save_filename)
+    
 def convert2np(X_train, Y_train, X_valid, Y_valid, X_test, Y_test):
     
     X_train, Y_train = np.array(X_train), np.array(Y_train)

@@ -19,7 +19,7 @@ def plot_history(history):
     plt.xlabel('Epoch')
     plt.ylabel('Loss: Mean Squared Error')
     plt.ylim([0, 8000])
-    plt.savefig('../../output_plots/NN1-loss.png', bbox_inches="tight")
+    plt.savefig('../output_plots/NN1-loss.png', bbox_inches="tight")
 
     plt.figure(1, figsize=(3.75, 2.75))
     plt.plot(epoch, train_mae, label = 'Train MAE')
@@ -28,7 +28,7 @@ def plot_history(history):
     plt.xlabel('Epoch')
     plt.ylabel('Mean Absolute Error')
     plt.ylim([0, 20])
-    plt.savefig('../../output_plots/NN2-mae.png', bbox_inches="tight")
+    plt.savefig('../output_plots/NN2-mae.png', bbox_inches="tight")
 
     plt.figure(2, figsize=(3.75, 2.75))
     plt.plot(epoch, train_r2, label = 'Train R2')
@@ -37,7 +37,7 @@ def plot_history(history):
     plt.ylim([0.7, 1])
     plt.xlabel('Epoch')
     plt.ylabel('R2 Coeff')
-    plt.savefig('../../output_plots/NN3-R2.png', bbox_inches="tight")
+    plt.savefig('../output_plots/NN3-R2.png', bbox_inches="tight")
     
 def plot_test(predictions, Y_test):
     
@@ -52,7 +52,7 @@ def plot_test(predictions, Y_test):
     plt.xlabel('Labels')
     plt.ylabel('Predictions')
     plt.plot([0, 3000], [0, 3000]) 
-    plt.savefig('../../output_plots/NN4-predictions.png', bbox_inches="tight")
+    plt.savefig('../output_plots/NN4-predictions.png', bbox_inches="tight")
     
     plt.figure(4, figsize=(3.75, 2.75))
     error = predictions - Y_test
@@ -62,4 +62,4 @@ def plot_test(predictions, Y_test):
     plt.hist(error, bins = 10)
     plt.xlabel("Prediction Error")
     plt.ylabel("Count") 
-    plt.savefig('../../output_plots/NN5-error.png', bbox_inches="tight")
+    plt.savefig('../output_plots/NN5-error.png', bbox_inches="tight")

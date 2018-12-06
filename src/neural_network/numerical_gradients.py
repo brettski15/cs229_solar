@@ -3,15 +3,12 @@ from tensorflow import keras as K
 
 def main():
     
-    
-    
-    
-    filename = '../model-and-weights.h5'
+    filename = '../NN-model-and-weights.h5'
     model = K.models.load_model(filename)
     model.summary()
     
-    x = np.zeros((1, 171))
-    num_grad = np.zeros((1, 171))
+    x = np.zeros((1, 163))
+    num_grad = np.zeros((1, 163))
     
     epsilon = 1e-6
     for i in range(x.shape[1]):
