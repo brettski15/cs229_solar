@@ -87,26 +87,26 @@ def main(train_set, train_labels, valid_set, valid_labels, test_set, test_labels
     # Visualize the prediction result
 
     lw = 2
-    X_Axis = np.arange(0,76)
-    X_Axis = np.array([X_Axis])
-    X_Axis = X_Axis.T
-    plt.scatter(X_Axis, Y_test, color='black', label='Y_Test_Data')
-    plt.xlabel("Test Sample Index")
-    plt.ylabel("Number of Solar Panels")
+    #X_Axis = np.arange(0,76)
+    #X_Axis = np.array([X_Axis])
+    #X_Axis = X_Axis.T
+    #plt.scatter(X_Axis, Y_test, color='black', label='Y_Test_Data')
+    plt.xlabel("Actual Label")
+    plt.ylabel("Predict Label")
     # #############################################################################
     # Plot RBF result
-    #plt.plot(X_Axis, Y_rbf_test_pridict, color='blue', lw=lw, label='Y_Predict_RBF')
+    #plt.scatter(Y_test, Y_rbf_test_pridict, color='blue', lw=lw, label='RBF Kernel')
     #plt.title("SVR using RBF Kernel \n Average confidence: %f" %confidence_rbf_test)
 
     # #############################################################################
     # Plot Linear result
-    #plt.plot(X_Axis, Y_linear_test_pridict, color='green', lw=lw, label='Y_Predict_Linear')
+    #plt.scatter(Y_test, Y_linear_test_pridict, color='red', lw=lw, label='Linear Kernel')
     #plt.title("SVR using Linear Kernel \n Average confidence: %f" % confidence_linear_test)
 
     # #############################################################################
     # Plot Poly result
-    plt.plot(X_Axis, Y_poly_test_pridict, color='red', lw=lw, label='Y_Predict_Poly')
-    plt.title("SVR using Poly Kernel \n Average confidence: %f" % confidence_poly_test)
+    plt.scatter(Y_test, Y_poly_test_pridict, color='green', lw=lw, label='Polynomial Kernel')
+    plt.title("SVR using Polynomial Kernel \n Average confidence: %f" % confidence_poly_test)
 
     # #############################################################################
 
