@@ -29,7 +29,7 @@ def main(train_set, train_labels, valid_set, valid_labels, test_set, test_labels
     num_epochs = 100
     batch_size = 64
     
-    save_path = 'model-and-weights.h5'
+    save_path = 'z-model-and-weights.h5'
     
     # initialize X, Y
     X_train = train_set
@@ -60,15 +60,15 @@ def main(train_set, train_labels, valid_set, valid_labels, test_set, test_labels
     model, history = train_model(model, X_train, Y_train, X_valid, Y_valid, batch_size, num_epochs)
     model.save(save_path)
     
-    # plot train/valid loss (outputs graphs of MSE, MAE, and R2 Coeff.)
-    print_stats(history)
-    plot_history(history)
-    
-    # predict using model
-    predictions = model.predict(X_test, verbose = 0)
-        
-    # plot test results (outputs graphs of labels vs. predictions and histogram of prediction error)
-    plot_test(predictions, Y_test)
+#    # plot train/valid loss (outputs graphs of MSE, MAE, and R2 Coeff.)
+#    print_stats(history)
+#    plot_history(history)
+#    
+#    # predict using model
+#    predictions = model.predict(X_test, verbose = 0)
+#        
+#    # plot test results (outputs graphs of labels vs. predictions and histogram of prediction error)
+#    plot_test(predictions, Y_test)
 
 def convert2np(X_train, Y_train, X_valid, Y_valid, X_test, Y_test):
     
@@ -134,8 +134,8 @@ def build_model(layer_dims, activations, dropout, n_train, lr):
         model.add(K.layers.Dropout(dropout[i]))
         model.add(K.layers.Activation(activations[i]))
 
-#    model.compile(loss = 'mse', optimizer = K.optimizers.Adam(lr), metrics = ['mae'])
-    model.compile(loss = 'mse', optimizer = K.optimizers.Adam(lr), metrics = ['mae', r2_keras])
+    model.compile(loss = 'mse', optimizer = K.optimizers.Adam(lr), metrics = ['mae'])
+#    model.compile(loss = 'mse', optimizer = K.optimizers.Adam(lr), metrics = ['mae', r2_keras])
     
     print ('\n------------Building NN Model Complete------------------')
     

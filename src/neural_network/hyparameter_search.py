@@ -22,15 +22,13 @@ def main():
     
     for i in range(hyps.shape[1]):
         layer_dims.append([])
-        dropout.append([])
-        l2_reg.append([])    
+        dropout.append([])  
         
     for i in range(hyps.shape[1]):
         layer_dims[i] = hyps[1:7, i]
         dropout[i] = hyps[7:13, i]
-        l2_reg[i] = hyps[13:, i]
         
-    num_layers_h, layer_dims_h, dropout_h, l2_reg_h = np.array(num_layers), np.array(layer_dims), np.array(dropout), np.array(l2_reg)
+    num_layers_h, layer_dims_h, dropout_h = np.array(num_layers), np.array(layer_dims), np.array(dropout), np.array(l2_reg)
     stats = np.zeros((4, 20))
     
     # initialize X, Y
