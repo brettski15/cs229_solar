@@ -151,7 +151,15 @@ def get_df_from_csv(csv_path, partial_data=None):
             'system_per_household_adj1',
             'log_system_per_household_adj1',
             'system_per_household_adj2',
-            'log_system_per_household_adj2'
+            'log_system_per_household_adj2',
+            'fips',
+            'existing_installs_count',
+            'number_of_panels_median',
+            'number_of_panels_total',
+            'area_per_area',
+            'area_per_population',
+            'fc',
+            'ft'
         ]
         d_matrix = d_matrix.drop(proxy_label_cols, axis=1)
         string_cols = [
