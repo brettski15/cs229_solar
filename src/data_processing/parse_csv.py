@@ -145,7 +145,13 @@ def get_df_from_csv(csv_path, partial_data=None):
             'solar_system_count_res',
             'solar_system_count_nonres',
             'total_panel_area_res',
-            'total_panel_area_nonres'
+            'total_panel_area_nonres',
+            'system_per_household',
+            'log_system_per_household',
+            'system_per_household_adj1',
+            'log_system_per_household_adj1',
+            'system_per_household_adj2',
+            'log_system_per_household_adj2'
         ]
         d_matrix = d_matrix.drop(proxy_label_cols, axis=1)
         string_cols = [
@@ -158,7 +164,7 @@ def get_df_from_csv(csv_path, partial_data=None):
         d_matrix.replace([np.inf, -np.inf], np.nan)
         d_matrix.dropna(inplace=True)
         d_matrix = d_matrix.astype(float, errors='ignore')
-        d_matrix = d_matrix.reset_index()
+        d_matrix = d_matrix.reset_index(drop=True)
         print(f"\033[91mAfter dropping rows with NaNs, {len(d_matrix.index)} rows remaining.\033[0m")
         # print(d_matrix)
 
@@ -179,8 +185,8 @@ def get_df_from_csv(csv_path, partial_data=None):
                 print(row)
                 continue
 
-    d_matrix = d_matrix.reset_index()
-    labels_matrix = labels_matrix.reset_index()
+    d_matrix = d_matrix.reset_index(drop=True)
+    labels_matrix = labels_matrix.reset_index(drop=True)
 
     return d_matrix, labels_matrix
 
