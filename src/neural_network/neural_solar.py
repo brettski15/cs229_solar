@@ -14,12 +14,12 @@ def main(train_set, train_labels, valid_set, valid_labels, test_set, test_labels
     # See above for how to access the data and labels
     
     # hyperparameters
-    layer_dims = [256, 192, 160, 160, 160, 1]
-    activations = ['relu', 'relu', 'relu', 'relu', 'relu', 'relu']
-    dropout = [0.1, 0.25, 0.1, 0.35, 0.50, 0]
-    lr = 1e-4
-    num_epochs = 50
-    batch_size = 64
+    layer_dims = [512, 128, 1]
+    activations = ['relu', 'relu', 'linear']
+    dropout = [0.25, 0.25, 0]
+    lr = 3e-4
+    num_epochs = 200
+    batch_size = 512
     
     save_path = 'NN-model-and-weights.h5'
     
@@ -32,7 +32,7 @@ def main(train_set, train_labels, valid_set, valid_labels, test_set, test_labels
     Y_valid = valid_labels
     Y_test = test_labels
     
-    # save_data('data.h5', [X_train, Y_train, X_valid, Y_valid, X_test, Y_test])
+    save_data('data.h5', [X_train, Y_train, X_valid, Y_valid, X_test, Y_test])
 
     # convert to np and slice X, Y
     X_train, Y_train, X_valid, Y_valid, X_test, Y_test = convert2np(X_train, Y_train, X_valid, Y_valid, X_test, Y_test)
@@ -52,15 +52,15 @@ def main(train_set, train_labels, valid_set, valid_labels, test_set, test_labels
     model, history = train_model(model, X_train, Y_train, X_valid, Y_valid, batch_size, num_epochs)
     model.save(save_path)
     
-#    # plot train/valid loss (outputs graphs of MSE, MAE, and R2 Coeff.)
-#    print_stats(history)
-#    plot_history(history)
-#    
-#    # predict using model
-#    predictions = model.predict(X_test, verbose = 0)
-#        
-#    # plot test results (outputs graphs of labels vs. predictions and histogram of prediction error)
-#    plot_test(predictions, Y_test)
+    # plot train/valid loss (outputs graphs of MSE, MAE, and R2 Coeff.)
+    print_stats(history)
+    plot_history(history)
+    
+    # predict using model
+    predictions = model.predict(X_test, verbose = 0)
+        
+    # plot test results (outputs graphs of labels vs. predictions and histogram of prediction error)
+    plot_test(predictions, Y_test)
 
 def save_data(save_filename, save_obj):
     print('\nSaving data...')
@@ -134,8 +134,8 @@ def build_model(layer_dims, activations, dropout, n_train, lr):
         model.add(K.layers.Dropout(dropout[i]))
         model.add(K.layers.Activation(activations[i]))
 
-    model.compile(loss = 'mse', optimizer = K.optimizers.Adam(lr), metrics = ['mae'])
-#    model.compile(loss = 'mse', optimizer = K.optimizers.Adam(lr), metrics = ['mae', r2_keras])
+#    model.compile(loss = 'mse', optimizer = K.optimizers.Adam(lr), metrics = ['mae'])
+    model.compile(loss = 'mse', optimizer = K.optimizers.Adam(lr), metrics = ['mae', r2_keras])
     
     print ('\n------------Building NN Model Complete------------------')
     
@@ -156,11 +156,15 @@ def print_stats(history):
     
     min_train_loss = min(history.history['loss'])
     min_val_loss = min(history.history['val_loss'])
+    min_train_MAE = min(history.history['mean_absolute_error'])
+    min_val_MAE = min(history.history['val_mean_absolute_error'])
     max_r2_train = max(history.history['r2_keras'])
     max_r2_val = max(history.history['val_r2_keras'])
     
     print('Min Train Loss:', '%.3f' % min_train_loss)
     print('Min Valid Loss:', '%.3f' % min_val_loss)
+    print('Min Train MAE:', '%.3f' % min_train_MAE)
+    print('Min Valid MAE:', '%.3f' % min_val_MAE)
     print('Max Train R2 Coeff.:', '%.3f' % max_r2_train)
     print('Max Valid R2 Coeff.', '%.3f' % max_r2_val)
     

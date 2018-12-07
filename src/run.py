@@ -4,7 +4,7 @@ from neural_network.neural_solar import main as nn_main
 from svm.svm_solar import main as svm_main
 from data_processing.parse_csv import get_examples_from_csv, split_simple_data, get_df_from_csv, split_df
 from data_processing.pca import  pca_main
-
+import numpy as np
 
 DATA_PATH = "../data/tract_all.csv"
 TOTAL_DATA_SIZE = 72538
@@ -46,7 +46,9 @@ def main():
 
     data, labels = get_df_from_csv(DATA_PATH, data_count)
     # data.to_csv('data.csv')
-    # print(list(data.columns.values))
+#    columns = data.columns.values
+#    columns = np.array(columns)
+#    np.savetxt('columns.csv', columns, fmt='%s')
     train_set, train_labels, valid_set, valid_labels, test_set, test_labels = split_df(data, labels)
     # print(train_set.head())
 

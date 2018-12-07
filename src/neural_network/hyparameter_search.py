@@ -1,7 +1,7 @@
 import numpy as np
 import tensorflow as tf
 from tensorflow import keras as K
-from neural_plotter import plot_history
+import matplotlib.pyplot as plt
 import pickle
 import pandas as pd
 
@@ -11,25 +11,28 @@ def main():
     # See above for how to access the data and labels
     
     hyps = pd.read_csv('hyperparameter_search.csv')
-    print (hyps)
+#    print (hyps)
     hyps = np.array(hyps)
     
-    num_layers = hyps[0, :]
+    learning_rate = hyps[0, :]
+    batch_size = hyps[1, :]
+    num_layers = hyps[2, :]
     
     layer_dims = []
     dropout = []
-    l2_reg = []
+
     
     for i in range(hyps.shape[1]):
         layer_dims.append([])
-        dropout.append([])  
+        dropout.append([])
         
     for i in range(hyps.shape[1]):
-        layer_dims[i] = hyps[1:7, i]
-        dropout[i] = hyps[7:13, i]
+        layer_dims[i] = hyps[3:9, i]
+        dropout[i] = hyps[9:15, i]
         
-    num_layers_h, layer_dims_h, dropout_h = np.array(num_layers), np.array(layer_dims), np.array(dropout), np.array(l2_reg)
-    stats = np.zeros((4, 20))
+    learning_rate_h, batch_size_h, num_layers_h, layer_dims_h, dropout_h = (np.array(learning_rate), np.array(batch_size),
+                                                                            np.array(num_layers), np.array(layer_dims), np.array(dropout))
+    stats = np.zeros((4, hyps.shape[1]))
     
     # initialize X, Y
     X_train, Y_train, X_valid, Y_valid, X_test, Y_test = open_data('data.h5')
@@ -46,12 +49,12 @@ def main():
 
     # hyperparameters
     
-    batch_size = 256
-    lr = 0.001
     activations = ['relu', 'relu', 'relu', 'relu', 'relu', 'relu']
-    num_epochs = 50
+    num_epochs = 150
     
-    for i in range(20):
+    for i in range(hyps.shape[1]):
+        lr = learning_rate_h[i]
+        batch_size = int(batch_size_h[i])
         num_layers = num_layers_h[i]
         layer_dims = layer_dims_h[i, :]
         dropout = dropout_h[i, :]
@@ -65,11 +68,25 @@ def main():
         
         # plot train/valid loss (outputs graphs of MSE, MAE, and R2 Coeff.)
         print_stats(history)
-        plot_history(history)
         stats[0, i] = min(history.history['loss'])
         stats[1, i] = min(history.history['val_loss'])
         stats[2, i] = max(history.history['r2_keras'])
         stats[3, i] = max(history.history['val_r2_keras'])
+
+        epoch = history.epoch
+        train_r2 = np.array(history.history['r2_keras'])
+        val_r2 = np.array(history.history['val_r2_keras'])
+        
+        plt.figure(2, figsize=(3.75, 2.75))
+        plt.clf()
+        plt.plot(epoch, train_r2, label = 'Train R2')
+        plt.plot(epoch, val_r2, label = 'Valid R2')
+        plt.legend()
+        plt.ylim([0.6, 1])
+        plt.xlabel('Epoch')
+        plt.ylabel('R2 Coeff')
+        plt.savefig('hyp_search_' + str(i) + '.png', bbox_inches="tight")
+        del model
     
     np.savetxt('stats.csv', stats)
 
@@ -111,6 +128,7 @@ def convert2np(X_train, Y_train, X_valid, Y_valid, X_test, Y_test):
 
 def shuffle(X, Y):
     
+    np.random.seed(0)
     order = np.argsort(np.random.random(X.shape[0]))
     X = X[order, :]
     Y = Y[order, :]
