@@ -14,8 +14,8 @@ PLOT_DIR = '../output_plots'
 def pca_main(train_set, train_labels, test_set, test_labels):
     print("Scaling data")
     sc = StandardScaler()
-    train_set.drop(columns=['index'], inplace=True)
-    test_set.drop(columns=['index'], inplace=True)
+    # train_set.drop(columns=['index'], inplace=True)
+    # test_set.drop(columns=['index'], inplace=True)
     x_train = sc.fit_transform(train_set)
     x_test = sc.transform(test_set)
 

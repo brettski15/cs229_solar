@@ -180,7 +180,7 @@ def get_df_from_csv(csv_path, partial_data=None):
         print(f"Shuffling data with seed {seed}")
         d_matrix = shuffle(d_matrix, random_state=seed)
 
-        labels_matrix = d_matrix.ix[:, 1:4]
+        labels_matrix = d_matrix.ix[:, 0:3]
         print(labels_matrix.head())
         print(d_matrix.head())
         d_matrix = d_matrix.drop(['tile_count', 'solar_system_count', 'total_panel_area'], axis=1)
