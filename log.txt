@@ -1,0 +1,29 @@
+
+
+
+
+add tensorflow, os, keras to nn requirements
+
+
+#    # remove non-numeric column of county names
+#    train_data = np.delete(train_data, 2, 1)
+#    
+#    # remove non-numeric column of state names
+#    train_data = np.delete(train_data, 38, 1)
+#    
+#    # remove remaining non-numeric columns and inf
+#    train_data = np.delete(train_data, 161, 1)
+#    train_data = np.delete(train_data, 154, 1)
+#    train_data = np.delete(train_data, 156, 1)
+#    
+#    print (np.argwhere(np.isnan(train_data)))
+#    
+#    # change array of strings to array of floats
+#    train_data_f = np.zeros((train_data.shape))
+#    for i in range(train_data.shape[0]):
+#        for j in range(train_data.shape[1]):
+#            try:
+#                train_data_f[i, j] = np.float32(train_data[i, j])
+#            except:
+#                train_data_f[i, j] = 0  
+#    train_data = train_data_f  

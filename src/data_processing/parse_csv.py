@@ -2,6 +2,7 @@ import os
 import numpy as np
 import pandas as pd
 from sklearn.model_selection import train_test_split
+from sklearn.utils import shuffle
 
 # from solar_common.solar_structures import SolarExample, SolarMatrix, SolarLabel, SimpleMatrix
 from solar_common.solar_structures import SolarLabel, SimpleMatrix
@@ -138,14 +139,48 @@ def get_df_from_csv(csv_path, partial_data=None):
                                encoding='ISO-8859-1')
         # rename_col = d_matrix.columns.values[0]
         # d_matrix.rename(columns={rename_col: 'idx'}, inplace=True)
-        d_matrix = d_matrix.drop(['county', 'state', 'electricity_price_transportation'], axis=1)
+        proxy_label_cols = [
+            'tile_count_res',
+            'tile_count_nonres',
+            'solar_system_count_res',
+            'solar_system_count_nonres',
+            'total_panel_area_res',
+            'total_panel_area_nonres',
+            'system_per_household',
+            'log_system_per_household',
+            'system_per_household_adj1',
+            'log_system_per_household_adj1',
+            'system_per_household_adj2',
+            'log_system_per_household_adj2',
+            'fips',
+            'existing_installs_count',
+            'number_of_panels_median',
+            'number_of_panels_total',
+            'area_per_area',
+            'area_per_population',
+            'fc',
+            'ft'
+        ]
+        d_matrix = d_matrix.drop(proxy_label_cols, axis=1)
+        string_cols = [
+            'county',
+            'state',
+            'electricity_price_transportation'
+        ]
+        d_matrix = d_matrix.drop(string_cols, axis=1)
+
         d_matrix.replace([np.inf, -np.inf], np.nan)
         d_matrix.dropna(inplace=True)
         d_matrix = d_matrix.astype(float, errors='ignore')
-        d_matrix = d_matrix.reset_index()
+        d_matrix = d_matrix.reset_index(drop=True)
+        print(f"\033[91mAfter dropping rows with NaNs, {len(d_matrix.index)} rows remaining.\033[0m")
         # print(d_matrix)
 
-        labels_matrix = d_matrix.ix[:, 1:4]
+        seed = 1992
+        print(f"Shuffling data with seed {seed}")
+        d_matrix = shuffle(d_matrix, random_state=seed)
+
+        labels_matrix = d_matrix.ix[:, 0:3]
         print(labels_matrix.head())
         print(d_matrix.head())
         d_matrix = d_matrix.drop(['tile_count', 'solar_system_count', 'total_panel_area'], axis=1)
@@ -158,7 +193,10 @@ def get_df_from_csv(csv_path, partial_data=None):
                 print(row)
                 continue
 
-    return (d_matrix, labels_matrix)
+    d_matrix = d_matrix.reset_index(drop=True)
+    labels_matrix = labels_matrix.reset_index(drop=True)
+
+    return d_matrix, labels_matrix
 
 
 def get_examples_from_csv(csv_path, partial_data=0, ret_simple_matrix=False):
@@ -167,6 +205,7 @@ def get_examples_from_csv(csv_path, partial_data=0, ret_simple_matrix=False):
     It also renames the first column (after removal) to 'index'
     :param csv_path: The path to the csv file to pull data from
     :param partial_data: (Optional) The number of examples to use from the dataset
+    :param ret_simple_matrix: (Optional) If true, return a simple matrix. Else return a SolarMatrix
     :return: SolarMatrix -- a structure containing all of the header names as well as all examples
     """
     if not os.path.isfile(csv_path):
@@ -195,7 +234,7 @@ def get_examples_from_csv(csv_path, partial_data=0, ret_simple_matrix=False):
                 # examples.append(ex)
                 labels.append(label)
                 num_examples += 1
-                if partial_data > 0 and num_examples >= partial_data:
+                if num_examples >= partial_data > 0:
                     print(f"Opting to not use all data for efficiency. Stopping at {partial_data} examples.")
                     break
 
