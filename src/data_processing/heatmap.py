@@ -17,10 +17,16 @@ def get_us_heatmap(df):
 
     states = df['state'].astype(str).unique()
     cts = []
+    system_counts = []
+    normalized_counts = []
     for s in states:
-        cts.append(new_counts[s])
+        c = new_counts[s]
+        cts.append(c)
+        sc = df['solar_system_count'].where(df['state'] == s).sum(axis=0)
+        system_counts.append(sc)
+        normalized_counts.append(float(sc)/float(c))
 
-    new_df = pd.DataFrame({'state': states, 'count': cts})
+    new_df = pd.DataFrame({'state': states, 'count': cts, 'systems': system_counts, 'norm': normalized_counts})
     new_df = new_df.applymap(lambda s: s.upper() if type(s) == str else s)
     print(new_df)
 
@@ -45,7 +51,7 @@ def get_us_heatmap(df):
         type="choropleth",
         autocolorscale=True,
         locations=new_df['state'],
-        z=new_df['count'].astype(float),
+        z=new_df['norm'].astype(float),
         locationmode='USA-states',
         text=new_df['state'],
         marker=dict(
@@ -53,10 +59,10 @@ def get_us_heatmap(df):
                 color='rgb(255,255,255)',
                 width=2
             )),
-        colorbar=dict(title='Number of Examples')
+        colorbar=dict(title='Average Number of Systems')
     )]
 
-    layout = dict(title='Where Our Data Comes From',
+    layout = dict(title='Solar System Density per State Normalized by Number of Census Tracts',
                   geo=dict(scope="usa", showlakes=True, lakecolor='rgb(255, 255, 255)'))
 
     py.plot(go.Figure(data=plt_data, layout=layout), validate=False)

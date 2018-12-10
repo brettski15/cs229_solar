@@ -32,13 +32,19 @@ def pca_main(train_set, train_labels, test_set, test_labels):
     stats = train_labels.describe()
     label_ranges = {}
 
-    num_colors = 30
+    num_colors = 25
     # colors = ['b', 'g', 'r', 'm', 'k', 'c', 'y']
     cmap = plt.cm.get_cmap('Paired', num_colors)
     colors = []
     for i in range(num_colors):
         colors.append(cmap(i))
     random.shuffle(colors)
+
+    plt_titles = {
+        'solar_system_count': 'Solar System Count',
+        'tile_count': 'Tile Count',
+        'total_panel_area': 'Panel Area'
+    }
 
     for l in train_labels.columns:
         print(f"Plotting PCA analysis for {l}")
@@ -55,12 +61,12 @@ def pca_main(train_set, train_labels, test_set, test_labels):
         ax = fig.add_subplot(1, 1, 1)
         ax.set_xlabel('Principal Component 1', fontsize=15)
         ax.set_ylabel('Principal Component 2', fontsize=15)
-        ax.set_title(f'2 component PCA for {l.capitalize()}', fontsize=20)
+        ax.set_title(f'2 Component PCA for {plt_titles[l]}', fontsize=20)
         for c, r in zip(colors, label_ranges[l]):
             ax.scatter(x_pca[(np_labels > r['min']) & (np_labels < r['max']), 0],
                        x_pca[(np_labels > r['min']) & (np_labels < r['max']), 1],
                        color=c, lw=2, label=f'Between {r["min"]} and {r["max"]}')
-        plt.legend(loc='best', shadow=False, scatterpoints=1)
+        plt.legend(loc='best', shadow=False, scatterpoints=1, prop={'size': 6})
         plt.savefig(f'{PLOT_DIR}/2_pca_{l}.png')
 
 if __name__ == '__main__':
