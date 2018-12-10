@@ -2,5 +2,6 @@ keras
 matplotlib
 numpy
 pandas
+plotly
 sklearn
 tensorflow

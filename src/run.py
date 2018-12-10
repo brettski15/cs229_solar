@@ -31,6 +31,8 @@ def main():
                         help="The number of pieces of data to use. 0 for all data.")
     parser.add_argument('--df', action='store_true', help="If specified, pull data into a Pandas DataFrame.")
     parser.add_argument('--pca', action='store_true', help="If specified, run PCA analysis. Requires --df as well.")
+    parser.add_argument('--heatmap', action='store_true',
+                        help="If specified, run a plotly choropleth for data density analysis.")
 
     args = parser.parse_args()
 
@@ -44,7 +46,7 @@ def main():
 
     print(f"Requesting {data_count} rows of data.")
 
-    data, labels = get_df_from_csv(DATA_PATH, data_count)
+    data, labels = get_df_from_csv(DATA_PATH, data_count, args.heatmap)
     # data.to_csv('data.csv')
     # print(list(data.columns.values))
     train_set, train_labels, valid_set, valid_labels, test_set, test_labels = split_df(data, labels)

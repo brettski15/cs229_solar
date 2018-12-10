@@ -1,3 +1,4 @@
+import copy
 import os
 import numpy as np
 import pandas as pd
@@ -6,6 +7,7 @@ from sklearn.utils import shuffle
 
 # from solar_common.solar_structures import SolarExample, SolarMatrix, SolarLabel, SimpleMatrix
 from solar_common.solar_structures import SolarLabel, SimpleMatrix
+from data_processing.heatmap import get_us_heatmap
 
 
 DATA_FILE = "../data/tract_all.csv"
@@ -90,35 +92,7 @@ def split_df(data_matrix, label_matrix, train_pct=80, valid_pct=10):
     return train_data, train_labels, valid_data, valid_labels, test_data, test_labels
 
 
-# def split_data(data_matrix, train_pct=60, valid_pct=20):
-#     if 100 - train_pct - valid_pct <= 0:
-#         raise RuntimeError("Invalid data split--not test data available.")
-#
-#     if 100 - train_pct - valid_pct < 5:
-#         print("!!!!!!!!!!!WARNING: Your test set is less than 5% of the available data. Is that too small?")
-#
-#     examples = data_matrix.data
-#     labels = data_matrix.labels
-#
-#     m = len(examples)
-#
-#     train_count = int((train_pct / 100) * m)
-#     valid_count = int((valid_pct / 100) * m)
-#     # test_count = m - train_count - valid_count
-#
-#     train_matrix = SolarMatrix(examples[0:train_count], labels[0:train_count],
-#                                data_matrix.headers)
-#
-#     valid_matrix = SolarMatrix(examples[train_count:-valid_count], labels[train_count:-valid_count],
-#                                data_matrix.headers)
-#
-#     test_matrix = SolarMatrix(examples[-valid_count:], labels[-valid_count:],
-#                           data_matrix.headers)
-#
-#     return train_matrix, valid_matrix, test_matrix
-
-
-def get_df_from_csv(csv_path, partial_data=None):
+def get_df_from_csv(csv_path, partial_data=None, heatmap=False):
     """
     Read 2 pandas DataFrames from the data. The first is all of the data (columns 5-183 plus an index column)
     The second is the set of label columns (2-4) plus an index column
@@ -137,6 +111,10 @@ def get_df_from_csv(csv_path, partial_data=None):
 
         d_matrix = pd.read_csv(fp, nrows=partial_data, usecols=data_cols, na_values=[''],
                                encoding='ISO-8859-1')
+
+        # Do some data mapping before dropping these other columns
+        if heatmap:
+            get_us_heatmap(copy.deepcopy(d_matrix))
         # rename_col = d_matrix.columns.values[0]
         # d_matrix.rename(columns={rename_col: 'idx'}, inplace=True)
         proxy_label_cols = [
@@ -181,8 +159,8 @@ def get_df_from_csv(csv_path, partial_data=None):
         d_matrix = shuffle(d_matrix, random_state=seed)
 
         labels_matrix = d_matrix.ix[:, 0:3]
-        print(labels_matrix.head())
-        print(d_matrix.head())
+        # print(labels_matrix.head())
+        # print(d_matrix.head())
         d_matrix = d_matrix.drop(['tile_count', 'solar_system_count', 'total_panel_area'], axis=1)
         # print(labels_matrix)
 
