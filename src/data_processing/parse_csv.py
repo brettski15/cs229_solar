@@ -140,6 +140,14 @@ def get_df_from_csv(csv_path, partial_data=None, heatmap=False):
             'ft'
         ]
         d_matrix = d_matrix.drop(proxy_label_cols, axis=1)
+
+        d_matrix.replace([np.inf, -np.inf], np.nan)
+        nan_df = d_matrix[d_matrix.isnull().any(axis=1)]
+        nan_cols = nan_df.columns[nan_df.isnull().any()].tolist()
+        nan_cols.insert(0, 'state')
+        nan_df[nan_cols].to_csv("../output_plots/nan_vals.csv", na_rep="NaN")
+        # print(d_matrix[d_matrix.isnull().any(axis=0)])
+
         string_cols = [
             'county',
             'state',
@@ -147,7 +155,6 @@ def get_df_from_csv(csv_path, partial_data=None, heatmap=False):
         ]
         d_matrix = d_matrix.drop(string_cols, axis=1)
 
-        d_matrix.replace([np.inf, -np.inf], np.nan)
         d_matrix.dropna(inplace=True)
         d_matrix = d_matrix.astype(float, errors='ignore')
         d_matrix = d_matrix.reset_index(drop=True)
