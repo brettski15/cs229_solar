@@ -23,11 +23,13 @@ def pca_main(train_set, train_labels, test_set, test_labels):
     pca = PCA(n_components=2)
     x_pca = pca.fit_transform(x_train)
     # x_test = pca.transform(x_test)
-    # pca_vals = pca.explained_variance_ratio_
+    pca_vals = pca.explained_variance_ratio_
     # print(pca_vals)
     # print(pca.components_)
-    # pca_df = pd.DataFrame(pca.components_, columns=train_set.columns, index=['PC-1', 'PC-2'])
-    # print(x_pca)
+    pca_df = pd.DataFrame(pca.components_.T, columns=['PC-1', 'PC-2'], index=train_set.columns)
+    pd.set_option('display.max_rows', 500)
+    print(pca_df.sort_values(['PC-1']))
+    print(pca_df.sort_values(['PC-2']))
 
     stats = train_labels.describe()
     label_ranges = {}
