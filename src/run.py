@@ -29,7 +29,6 @@ def main():
     parser.add_argument('--nn', action='store_true', help="If specified, run the Neural Network implementation.")
     parser.add_argument('--count', '-c', type=int, default=1000,
                         help="The number of pieces of data to use. 0 for all data.")
-    parser.add_argument('--df', action='store_true', help="If specified, pull data into a Pandas DataFrame.")
     parser.add_argument('--pca', action='store_true', help="If specified, run PCA analysis. Requires --df as well.")
     parser.add_argument('--heatmap', action='store_true',
                         help="If specified, run a plotly choropleth for data density analysis.")
