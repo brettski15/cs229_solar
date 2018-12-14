@@ -20,6 +20,8 @@ will be split 80/10/10.
 
 **Note:** The dataset included on this repo is a sample dataset that
 enables running this code. The full dataset is too large for github.
+For TA convenience, the code has been altered to preselect this
+sample dataset.
 
 
 Neural Network:

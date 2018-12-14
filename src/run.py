@@ -7,6 +7,7 @@ from data_processing.pca import  pca_main
 
 
 DATA_PATH = "../data/tract_all.csv"
+DATA_PATH2 = "../data/sample_data.csv"
 TOTAL_DATA_SIZE = 72538
 RESERVE_TEST_DATA = 14500
 
@@ -35,7 +36,7 @@ def main():
 
     print(f"Requesting {data_count} rows of data.")
 
-    data, labels = get_df_from_csv(DATA_PATH, data_count, args.heatmap)
+    data, labels = get_df_from_csv(DATA_PATH2, data_count, args.heatmap)
     # data.to_csv('data.csv')
     # print(list(data.columns.values))
     train_set, train_labels, valid_set, valid_labels, test_set, test_labels = split_df(data, labels)
