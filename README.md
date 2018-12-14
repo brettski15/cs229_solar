@@ -26,6 +26,8 @@ Support Vector Machine:
 ```bash
 python run.py --svm -c 0
 ```
+Outputs a plot to the user of the correlation plot between predictions and labels
+with the R<sup>2</sup> coefficient in the title.
 
 Primary Component Analysis:
 ---------------------------
