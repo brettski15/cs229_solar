@@ -18,6 +18,10 @@ used as the number of rows to include in the run. From this set, any
 rows with missing values will be dropped, and the remaining examples
 will be split 80/10/10.
 
+**Note:** The dataset included on this repo is a sample dataset that
+enables running this code. The full dataset is too large for github.
+
+
 Neural Network:
 ---------------
 ```bash
