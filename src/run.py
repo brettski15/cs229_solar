@@ -32,6 +32,8 @@ def main():
     parser.add_argument('--pca', action='store_true', help="If specified, run PCA analysis. Requires --df as well.")
     parser.add_argument('--heatmap', action='store_true',
                         help="If specified, run a plotly choropleth for data density analysis.")
+    parser.add_argument('--kern', type=str, default='rbf',
+                        help="The kernel to use with SVM. 'rbf', 'linear', or 'poly'")
 
     args = parser.parse_args()
 
@@ -58,7 +60,12 @@ def main():
         nn_main(train_set, train_labels, valid_set, valid_labels, test_set, test_labels)
 
     if args.svm:
-        svm_main(train_set, train_labels, valid_set, valid_labels, test_set, test_labels)
+        if args.kern not in ('rbf', 'poly', 'linear'):
+            print(f"Cannot run SVM with the kernel {args.kern}. Please select either rbf, poly, or linear")
+            return
+        else:
+            print(f"Running SVM regression with {args.kern} kernel.")
+            svm_main(train_set, train_labels, valid_set, valid_labels, test_set, test_labels, args.kern)
 
 
 if __name__ == '__main__':

@@ -3,7 +3,7 @@ from sklearn.svm import SVR
 import matplotlib.pyplot as plt
 
 
-def main(train_set, train_labels, valid_set, valid_labels, test_set, test_labels):
+def main(train_set, train_labels, valid_set, valid_labels, test_set, test_labels, kern):
 
     # #############################################################################
     # Generate sample data
@@ -34,83 +34,80 @@ def main(train_set, train_labels, valid_set, valid_labels, test_set, test_labels
     y_test = y_test.T
     y_test = y_test.ravel()
 
+    # Linewidth for plotting
+    lw = 2
+
     # #############################################################################
     # SVR using RBF
-    print("Fitting SVR using rbf... \n")
-    svr_rbf = SVR(C=1e3, cache_size=200, coef0=0.0, degree=3, epsilon=0.2, gamma='scale', kernel='rbf', max_iter=-1,
-                  shrinking=True, tol=0.001, verbose=False)
-    svr_rbf.fit(x_train, y_train)
-    confidence_rbf_validation = svr_rbf.score(x_valid, y_valid)
-    confidence_rbf_test = svr_rbf.score(x_test, y_test)
-    print("Average confidence for validation data using rbf kernel is %f" % confidence_rbf_validation)
-    print("Average confidence for test data using rbf kernel is %f" % confidence_rbf_test)
-    print("\n")
+    if kern == 'rbf':
+        print("Fitting SVR using rbf... \n")
+        svr_rbf = SVR(C=1e3, cache_size=200, coef0=0.0, degree=3, epsilon=0.2, gamma='scale', kernel='rbf', max_iter=-1,
+                      shrinking=True, tol=0.001, verbose=False)
+        svr_rbf.fit(x_train, y_train)
+        confidence_rbf_validation = svr_rbf.score(x_valid, y_valid)
+        confidence_rbf_test = svr_rbf.score(x_test, y_test)
+        print("Average confidence for validation data using rbf kernel is %f" % confidence_rbf_validation)
+        print("Average confidence for test data using rbf kernel is %f" % confidence_rbf_test)
+        print("\n")
+        y_rbf_test_predict = svr_rbf.predict(x_test)
+        print("y_rbf_test_predict\n")
+        print(y_rbf_test_predict)
+        print("=====================================================================")
+        # Plot RBF result
+        plt.scatter(y_test, y_rbf_test_predict, color='blue', lw=lw, label='RBF Kernel')
+        plt.title("SVR using RBF Kernel \n Average confidence: %f" % confidence_rbf_test)
     # #############################################################################
     # SVR using Linear
-    print("Fitting SVR using Linear... \n")
-    svr_linear = SVR(C=1e3, cache_size=200, coef0=0.0, degree=3, epsilon=0.2, gamma='scale', kernel='linear',
-                     max_iter=-1, shrinking=True, tol=0.001, verbose=False)
-    svr_linear.fit(x_train, y_train)
-    confidence_linear_validation = svr_linear.score(x_valid, y_valid)
-    confidence_linear_test = svr_linear.score(x_test, y_test)
-    print("Average confidence for validation data using rbf kernel is %f" % confidence_linear_validation)
-    print("Average confidence for test data using rbf kernel is %f" % confidence_linear_test)
-    print("\n")
+    if kern == 'linear':
+        print("Fitting SVR using Linear... \n")
+        svr_linear = SVR(C=1e3, cache_size=200, coef0=0.0, degree=3, epsilon=0.2, gamma='scale', kernel='linear',
+                         max_iter=-1, shrinking=True, tol=0.001, verbose=False)
+        svr_linear.fit(x_train, y_train)
+        confidence_linear_validation = svr_linear.score(x_valid, y_valid)
+        confidence_linear_test = svr_linear.score(x_test, y_test)
+        print("Average confidence for validation data using rbf kernel is %f" % confidence_linear_validation)
+        print("Average confidence for test data using rbf kernel is %f" % confidence_linear_test)
+        print("\n")
+        y_linear_test_predict = svr_linear.predict(x_test)
+        print("y_linear_test_predict\n")
+        print(y_linear_test_predict)
+        print("=====================================================================")
+        # Plot Linear result
+        plt.scatter(y_test, y_linear_test_predict, color='red', lw=lw, label='Linear Kernel')
+        plt.title("SVR using Linear Kernel \n Average confidence: %f" % confidence_linear_test)
     # #############################################################################
     # SVR using Poly
-    print("Fitting SVR using Poly... \n")
-    svr_poly = SVR(C=1e3, cache_size=200, coef0=0.0, degree=3, epsilon=0.2, gamma='scale', kernel='poly', max_iter=-1,
-                   shrinking=True, tol=0.001, verbose=False)
-    svr_poly.fit(x_train, y_train)
-    confidence_poly_validation = svr_poly.score(x_valid, y_valid)
-    confidence_poly_test = svr_poly.score(x_test, y_test)
-    print("Average confidence for validation data using rbf kernel is %f" % confidence_poly_validation)
-    print("Average confidence for test data using rbf kernel is %f" % confidence_poly_test)
-    print("\n")
+    if kern == 'poly':
+        print("Fitting SVR using Poly... \n")
+        svr_poly = SVR(C=1e3, cache_size=200, coef0=0.0, degree=3, epsilon=0.2, gamma='scale', kernel='poly', max_iter=-1,
+                       shrinking=True, tol=0.001, verbose=False)
+        svr_poly.fit(x_train, y_train)
+        confidence_poly_validation = svr_poly.score(x_valid, y_valid)
+        confidence_poly_test = svr_poly.score(x_test, y_test)
+        print("Average confidence for validation data using rbf kernel is %f" % confidence_poly_validation)
+        print("Average confidence for test data using rbf kernel is %f" % confidence_poly_test)
+        print("\n")
+        y_poly_test_predict = svr_poly.predict(x_test)
+        print("y_poly_test_predict\n")
+        print(y_poly_test_predict)
+        print("=====================================================================")
+        # Plot Poly result
+        plt.scatter(y_test, y_poly_test_predict, color='green', lw=lw, label='Polynomial Kernel')
+        plt.title("SVR using Polynomial Kernel \n Average confidence: %f" % confidence_poly_test)
     # #############################################################################
 
-    y_rbf_test_predict = svr_rbf.predict(x_test)
-    y_linear_test_predict = svr_linear.predict(x_test)
-    y_poly_test_predict = svr_poly.predict(x_test)
-    print("y_rbf_test_predict\n")
-    print(y_rbf_test_predict)
-    print("=====================================================================")
-    print("y_linear_test_predict\n")
-    print(y_linear_test_predict)
-    print("=====================================================================")
-    print("y_poly_test_predict\n")
-    print(y_poly_test_predict)
-    print("=====================================================================")
     print("y_test\n")
     print(y_test)
     print("=====================================================================")
 
     # #############################################################################
     # Visualize the prediction result
-
-    lw = 2
     # X_Axis = np.arange(0,76)
     # X_Axis = np.array([X_Axis])
     # X_Axis = X_Axis.T
     # plt.scatter(X_Axis, y_test, color='black', label='Y_Test_Data')
     plt.xlabel("Actual Label")
     plt.ylabel("Predict Label")
-    # #############################################################################
-    # Plot RBF result
-    # plt.scatter(y_test, y_rbf_test_predict, color='blue', lw=lw, label='RBF Kernel')
-    # plt.title("SVR using RBF Kernel \n Average confidence: %f" %confidence_rbf_test)
-
-    # #############################################################################
-    # Plot Linear result
-    # plt.scatter(y_test, y_linear_test_predict, color='red', lw=lw, label='Linear Kernel')
-    # plt.title("SVR using Linear Kernel \n Average confidence: %f" % confidence_linear_test)
-
-    # #############################################################################
-    # Plot Poly result
-    plt.scatter(y_test, y_poly_test_predict, color='green', lw=lw, label='Polynomial Kernel')
-    plt.title("SVR using Polynomial Kernel \n Average confidence: %f" % confidence_poly_test)
-
-    # #############################################################################
 
     plt.legend()
     plt.show()

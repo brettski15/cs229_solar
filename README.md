@@ -10,24 +10,34 @@ the cs229_solar/src directory. From there, execute:
 ```bash
 python run.py
 ```
-with a selection of options from below:
+with a selection of options from below. Please note that `-c 0` is
+necessary to force running the code on the entire data set for any
+of the options below. Without this flag, the code will default to
+only 1000 examples in a given run. Any number other than 0 will be
+used as the number of rows to include in the run. From this set, any
+rows with missing values will be dropped, and the remaining examples
+will be split 80/10/10.
 
 Neural Network:
 ---------------
 ```bash
 python run.py --nn -c 0
 ```
-Please note that `-c 0` is necessary to force running the code
-on the entire data set. Without this flag, the code will
-default to only 1000 examples in a given run.
+Outputs the following figures in the current directory:
+- fig1.png -- Loss : Mean Square Error Over Training Epoch (Train and Dev)
+- fig2.png -- Mean Absolute Error Over Training Epoch (Train and Dev)
+- fig3.png -- R<sup>2</sup> Correlation Over Training Epoch (Train and Dev)
+- fig4.png -- Predictions vs Labels (Test)
+- fig5.png -- Histogram of Prediction Error (Test)
+
 
 Support Vector Machine:
 -----------------------
 ```bash
-python run.py --svm -c 0
+python run.py --svm -c 0 --kern [rbf, linear, poly]
 ```
-Outputs a plot to the user of the correlation plot between predictions and labels
-with the R<sup>2</sup> coefficient in the title.
+Outputs a scatter plot of the labels versus predictions with the
+R<sup>2</sup> correlation coefficient in the title. The default kernel is rbf.
 
 Primary Component Analysis:
 ---------------------------
