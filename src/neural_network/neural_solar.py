@@ -8,6 +8,7 @@ import pickle
 # https://www.kaggle.com/zoupet/neural-network-model-for-house-prices-tensorflow
 # https://www.tensorflow.org/tutorials/keras/basic_regression
 
+
 def save_data(save_filename, save_obj):
     print('\nSaving data...')
     
@@ -16,6 +17,7 @@ def save_data(save_filename, save_obj):
         
     print('Save data complete. Object saved as:', save_filename)
     
+
 def main(train_set, train_labels, valid_set, valid_labels, test_set, test_labels):
     print("Running NN main")
 
@@ -32,32 +34,32 @@ def main(train_set, train_labels, valid_set, valid_labels, test_set, test_labels
     save_path = 'model-and-weights.h5'
     
     # initialize X, Y
-    X_train = train_set
-    X_valid = valid_set
-    X_test = test_set
+    x_train = train_set
+    x_valid = valid_set
+    x_test = test_set
     
-    Y_train = train_labels
-    Y_valid = valid_labels
-    Y_test = test_labels
+    y_train = train_labels
+    y_valid = valid_labels
+    y_test = test_labels
     
-    # save_data('data.h5', [X_train, Y_train, X_valid, Y_valid, X_test, Y_test])
+    # save_data('data.h5', [x_train, y_train, x_valid, y_valid, x_test, y_test])
 
     # convert to np and slice X, Y
-    X_train, Y_train, X_valid, Y_valid, X_test, Y_test = convert2np(X_train, Y_train, X_valid, Y_valid, X_test, Y_test)
+    x_train, y_train, x_valid, y_valid, x_test, y_test = convert2np(x_train, y_train, x_valid, y_valid, x_test, y_test)
     
     # shuffle
-    X_train, Y_train = shuffle(X_train, Y_train)
-    X_valid, Y_valid = shuffle(X_valid, Y_valid)
+    x_train, y_train = shuffle(x_train, y_train)
+    x_valid, y_valid = shuffle(x_valid, y_valid)
     
     # normalize features
-    X_train, X_valid, X_test = norm_features(X_train, X_valid, X_test)
+    x_train, x_valid, x_test = norm_features(x_train, x_valid, x_test)
     
     # build model
-    n_train = X_train.shape[1]
+    n_train = x_train.shape[1]
     model = build_model(layer_dims, activations, dropout, n_train, lr)
         
     # train model
-    model, history = train_model(model, X_train, Y_train, X_valid, Y_valid, batch_size, num_epochs)
+    model, history = train_model(model, x_train, y_train, x_valid, y_valid, batch_size, num_epochs)
     model.save(save_path)
     
     # plot train/valid loss (outputs graphs of MSE, MAE, and R2 Coeff.)
@@ -65,69 +67,73 @@ def main(train_set, train_labels, valid_set, valid_labels, test_set, test_labels
     plot_history(history)
     
     # predict using model
-    predictions = model.predict(X_test, verbose = 0)
+    predictions = model.predict(x_test, verbose=0)
         
     # plot test results (outputs graphs of labels vs. predictions and histogram of prediction error)
-    plot_test(predictions, Y_test)
+    plot_test(predictions, y_test)
 
-def convert2np(X_train, Y_train, X_valid, Y_valid, X_test, Y_test):
-    
-    X_train, Y_train = np.array(X_train), np.array(Y_train)
-    X_valid, Y_valid = np.array(X_valid), np.array(Y_valid)
-    X_test, Y_test = np.array(X_test), np.array(Y_test)
-    
-    X_train = X_train[:, :]
-    X_valid = X_valid[:, :]
-    X_test = X_test[:, :]
-    
-    Y_train = np.reshape(Y_train[:, 0], (Y_train.shape[0], 1))
-    Y_valid = np.reshape(Y_valid[:, 0], (Y_valid.shape[0], 1))
-    Y_test = np.reshape(Y_test[:, 0], (Y_test.shape[0], 1))
-    
-    print ('\n---------------NN Parameters----------------')
-    print ('Train features shape:', X_train.shape)
-    print ('Train labels shape:', Y_train.shape)
-    print ('Valid features shape:', X_valid.shape)
-    print ('Valid labels shape:', Y_valid.shape)
-    print ('Test features shape:', X_test.shape)
-    print ('Test labels shape:', Y_test.shape)
-    print ('--------------------------------------------\n')
-    
-    return X_train, Y_train, X_valid, Y_valid, X_test, Y_test 
 
-def shuffle(X, Y):
+def convert2np(x_train, y_train, x_valid, y_valid, x_test, y_test):
     
-    order = np.argsort(np.random.random(X.shape[0]))
-    X = X[order, :]
-    Y = Y[order, :]
+    x_train, y_train = np.array(x_train), np.array(y_train)
+    x_valid, y_valid = np.array(x_valid), np.array(y_valid)
+    x_test, y_test = np.array(x_test), np.array(y_test)
     
-    return X, Y
+    x_train = x_train[:, :]
+    x_valid = x_valid[:, :]
+    x_test = x_test[:, :]
+    
+    y_train = np.reshape(y_train[:, 0], (y_train.shape[0], 1))
+    y_valid = np.reshape(y_valid[:, 0], (y_valid.shape[0], 1))
+    y_test = np.reshape(y_test[:, 0], (y_test.shape[0], 1))
+    
+    print('\n---------------NN Parameters----------------')
+    print('Train features shape:', x_train.shape)
+    print('Train labels shape:', y_train.shape)
+    print('Valid features shape:', x_valid.shape)
+    print('Valid labels shape:', y_valid.shape)
+    print('Test features shape:', x_test.shape)
+    print('Test labels shape:', y_test.shape)
+    print('--------------------------------------------\n')
+    
+    return x_train, y_train, x_valid, y_valid, x_test, y_test 
 
-def norm_features(X_train, X_valid, X_test):
-    
-    print ('\n---------------Normalizing Features----------------')
-    
-    mean = X_train.mean(axis = 0)
-    std = X_train.std(axis = 0)
-    
-    X_train = (X_train - mean) / std
-    X_valid = (X_valid - mean) / std
-    X_test = (X_test - mean) / std
 
-    print ('X_train, X_valid, X_test normalized to zero mean and STD 1.\n')
+def shuffle(x, y):
+    
+    order = np.argsort(np.random.random(x.shape[0]))
+    x = x[order, :]
+    y = y[order, :]
+    
+    return x, y
 
-    return X_train, X_valid, X_test  
+
+def norm_features(x_train, x_valid, x_test):
+    
+    print('\n---------------Normalizing Features----------------')
+    
+    mean = x_train.mean(axis=0)
+    std = x_train.std(axis=0)
+    
+    x_train = (x_train - mean) / std
+    x_valid = (x_valid - mean) / std
+    x_test = (x_test - mean) / std
+
+    print('x_train, x_valid, x_test normalized to zero mean and STD 1.\n')
+
+    return x_train, x_valid, x_test  
+
 
 def build_model(layer_dims, activations, dropout, n_train, lr):
     
-    print ('\n---------------Building NN Model----------------')
+    print('\n---------------Building NN Model----------------')
     
     tf.reset_default_graph()
     K.backend.clear_session()
     
     model = K.models.Sequential()
     
-    model.add(K.layers.Dense(layer_dims[0], input_dim = n_train))
+    model.add(K.layers.Dense(layer_dims[0], input_dim=n_train))
     model.add(K.layers.Activation(activations[0]))
     for i in range(1, len(layer_dims)):
         model.add(K.layers.Dense(layer_dims[i]))
@@ -135,22 +141,25 @@ def build_model(layer_dims, activations, dropout, n_train, lr):
         model.add(K.layers.Activation(activations[i]))
 
 #    model.compile(loss = 'mse', optimizer = K.optimizers.Adam(lr), metrics = ['mae'])
-    model.compile(loss = 'mse', optimizer = K.optimizers.Adam(lr), metrics = ['mae', r2_keras])
+    model.compile(loss='mse', optimizer=K.optimizers.Adam(lr), metrics=['mae', r2_keras])
     
-    print ('\n------------Building NN Model Complete------------------')
+    print('\n------------Building NN Model Complete------------------')
     
     model.summary()
     
     return model
+
+
+def train_model(model, x_train, y_train, x_valid, y_valid, batch_size, num_epochs):
     
-def train_model(model, X_train, Y_train, X_valid, Y_valid, batch_size, num_epochs):
+    print('\n---------------Training/Validating NN Model----------------')
     
-    print ('\n---------------Training/Validating NN Model----------------')
+    history = model.fit(x_train, y_train, batch_size=batch_size, epochs=num_epochs, verbose=0,
+                        validation_data=(x_valid, y_valid), shuffle=True, callbacks=[Progress()])
     
-    history = model.fit(X_train, Y_train, batch_size = batch_size, epochs = num_epochs, verbose = 0, validation_data = (X_valid, Y_valid), shuffle = True, callbacks = [progress()])
-    
-    print ('\n-----------Training/Validating NN Model Complete----------------')
+    print('\n-----------Training/Validating NN Model Complete----------------')
     return model, history
+
 
 def print_stats(history):
     
@@ -163,15 +172,19 @@ def print_stats(history):
     print('Min Valid Loss:', '%.3f' % min_val_loss)
     print('Max Train R2 Coeff.:', '%.3f' % max_r2_train)
     print('Max Valid R2 Coeff.', '%.3f' % max_r2_val)
-    
-class progress(K.callbacks.Callback):
-  def on_epoch_end(self, epoch, logs):
-    if epoch % 10 == 0: print('Current Epoch:', epoch)
-    
+
+
+class Progress(K.callbacks.Callback):
+    def on_epoch_end(self, epoch, logs):
+        if epoch % 10 == 0:
+            print('Current Epoch:', epoch)
+
+
 def r2_keras(y_true, y_pred):
-    SS_res =  K.backend.sum(K.backend.square(y_true - y_pred)) 
-    SS_tot = K.backend.sum(K.backend.square(y_true - K.backend.mean(y_true))) 
-    return ( 1 - SS_res/(SS_tot + K.backend.epsilon()) )
-    
+    ss_res = K.backend.sum(K.backend.square(y_true - y_pred))
+    ss_tot = K.backend.sum(K.backend.square(y_true - K.backend.mean(y_true))) 
+    return 1 - ss_res/(ss_tot + K.backend.epsilon())
+
+
 if __name__ == '__main__':
     print("Please use `python run.py --nn` to run this model")
